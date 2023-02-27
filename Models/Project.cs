@@ -48,7 +48,8 @@ public class Project
     [JsonPropertyName("Episodes")]
     public List<Episode>? Episodes { get; set; }
 
-    public Project cloneProject(){
+    public Project cloneProject()
+    {
         Project newProject = new Project();
 
         newProject.Id = this.Id;

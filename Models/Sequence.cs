@@ -35,7 +35,8 @@ public class Sequence
     [JsonPropertyName("Shots")]
     public List<Shot>? Shots { get; set; }
 
-    public Sequence cloneSequence(){
+    public Sequence cloneSequence()
+    {
         Sequence newSequence = new Sequence();
 
         newSequence.Id = this.Id;

@@ -53,7 +53,7 @@ public class UsersController : ControllerBase
 
         if (updatedUser.Username != null)
             newUser.Username = updatedUser.Username;
-        
+
         if (updatedUser.Password != null)
             newUser.Password = updatedUser.Password;
 

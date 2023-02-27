@@ -47,7 +47,7 @@ public class ProjectsController : ControllerBase
         if (project is null)
         {
             return NotFound();
-        } 
+        }
 
         Project newProject = project.cloneProject();
 
@@ -59,10 +59,10 @@ public class ProjectsController : ControllerBase
 
         if (updatedProject.BeginDate != null)
             newProject.BeginDate = updatedProject.BeginDate;
-        
+
         if (updatedProject.EndDate != null)
             newProject.EndDate = updatedProject.EndDate;
-        
+
         // WARNING : We always replace new value here
         newProject.ShotsTotal = updatedProject.ShotsTotal;
         newProject.ShotsCompleted = updatedProject.ShotsCompleted;

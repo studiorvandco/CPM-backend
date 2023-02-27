@@ -23,7 +23,8 @@ public class Member
     [JsonPropertyName("PhoneNumber")]
     public string? PhoneNumber { get; set; }
 
-    public Member cloneMember(){
+    public Member cloneMember()
+    {
         Member newMember = new Member();
 
         newMember.Id = this.Id;

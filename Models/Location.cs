@@ -18,7 +18,8 @@ public class Location
     [JsonPropertyName("Link")]
     public string? Link { get; set; }
 
-    public Location cloneLocation(){
+    public Location cloneLocation()
+    {
         Location newLocation = new Location();
 
         newLocation.Id = this.Id;

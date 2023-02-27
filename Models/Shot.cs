@@ -31,7 +31,8 @@ public class Shot
     [JsonPropertyName("Completed")]
     public Boolean Completed { get; set; }
 
-    public Shot cloneShot(){
+    public Shot cloneShot()
+    {
         Shot newShot = new Shot();
 
         newShot.Id = this.Id;
