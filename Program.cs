@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<LoginConfiguration>(builder.Configuration.GetSection("Login"));
 builder.Services.AddSingleton<UsersService>();
+builder.Services.AddSingleton<LocationsService>();
+builder.Services.AddSingleton<MembersService>();
+builder.Services.AddSingleton<ProjectsService>();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
