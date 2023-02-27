@@ -11,10 +11,12 @@ public class UsersController : ControllerBase
 {
     private readonly UsersService _usersService;
 
-    public UsersController(UsersService usersService) => _usersService = usersService;
+    public UsersController(UsersService usersService) =>
+        _usersService = usersService;
 
     [HttpGet, Authorize]
-    public async Task<List<User>> Get() => await _usersService.GetAsync();
+    public async Task<List<User>> Get() =>
+        await _usersService.GetAsync();
 
     [HttpGet("{id:length(24)}"), Authorize]
     public async Task<ActionResult<User>> Get(string id)
@@ -47,9 +49,15 @@ public class UsersController : ControllerBase
             return NotFound();
         }
 
-        updatedUser.Id = user.Id;
+        User newUser = user.cloneUser();
 
-        await _usersService.UpdateAsync(id, updatedUser);
+        if (updatedUser.Username != null)
+            newUser.Username = updatedUser.Username;
+        
+        if (updatedUser.Password != null)
+            newUser.Password = updatedUser.Password;
+
+        await _usersService.UpdateAsync(id, newUser);
 
         return NoContent();
     }
