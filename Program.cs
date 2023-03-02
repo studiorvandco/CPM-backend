@@ -3,6 +3,7 @@ using CPMApi.Models;
 using CPMApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +75,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     );
 });
+builder.Services.AddCors();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -83,5 +85,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors(builder =>
+    builder.AllowAnyOrigin()
+           .WithHeaders(HeaderNames.ContentType)
+);
 app.MapControllers();
 app.Run();
