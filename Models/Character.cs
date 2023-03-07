@@ -12,9 +12,11 @@ public class Character
 
     [BsonElement("FirstName")]
     [JsonPropertyName("FirstName")]
-    public string? FirstName { get; set; }
+    [BsonDefaultValue("")]
+    public string FirstName { get; set; } = "";
 
     [BsonElement("LastName")]
     [JsonPropertyName("LastName")]
-    public string? LastName { get; set; }
+    [BsonDefaultValue("")]
+    public string LastName { get; set; } = "";
 }

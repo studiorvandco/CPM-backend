@@ -10,22 +10,23 @@ public class Location
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
+    [BsonRequired]
     [BsonElement("Name")]
     [JsonPropertyName("Name")]
-    public string? Name { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-    [BsonElement("Link")]
-    [JsonPropertyName("Link")]
-    public string? Link { get; set; }
+    [BsonElement("Position")]
+    [JsonPropertyName("Position")]
+    [BsonDefaultValue("")]
+    public string Position { get; set; } = "";
 
-    public Location cloneLocation()
-    {
+    /*public Location cloneLocation(){
         Location newLocation = new Location();
 
         newLocation.Id = this.Id;
         newLocation.Name = this.Name;
-        newLocation.Link = this.Link;
+        newLocation.Position = this.Position;
 
         return newLocation;
-    }
+    }*/
 }

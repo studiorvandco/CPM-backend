@@ -17,14 +17,15 @@ public class Member
 
     [BsonElement("LastName")]
     [JsonPropertyName("LastName")]
-    public string? LastName { get; set; }
+    [BsonDefaultValue("")]
+    public string LastName { get; set; } = "";
 
     [BsonElement("PhoneNumber")]
     [JsonPropertyName("PhoneNumber")]
-    public string? PhoneNumber { get; set; }
+    [BsonDefaultValue("")]
+    public string PhoneNumber { get; set; } = "";
 
-    public Member cloneMember()
-    {
+    /*public Member cloneMember(){
         Member newMember = new Member();
 
         newMember.Id = this.Id;
@@ -33,5 +34,5 @@ public class Member
         newMember.PhoneNumber = this.PhoneNumber;
 
         return newMember;
-    }
+    }*/
 }

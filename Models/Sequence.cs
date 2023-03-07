@@ -15,44 +15,58 @@ public class Sequence
     [JsonPropertyName("Number")]
     public int Number { get; set; }
 
+    [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [BsonDefaultValue("")]
+    public string Description { get; set; } = "";
 
-    [BsonElement("Date")]
-    [JsonPropertyName("Date")]
-    public DateTimeOffset? Date { get; set; }
+    [BsonRequired]
+    [BsonElement("BeginDate")]
+    [JsonPropertyName("BeginDate")]
+    public DateTimeOffset BeginDate { get; set; }
 
-    [BsonElement("Time")]
-    [JsonPropertyName("Time")]
-    public string? Time { get; set; }
+    [BsonRequired]
+    [BsonElement("EndDate")]
+    [JsonPropertyName("EndDate")]
+    public DateTimeOffset EndDate { get; set; }
+
+    [BsonElement("ShotsTotal")]
+    [JsonPropertyName("ShotsTotal")]
+    [BsonDefaultValue("0")]
+    public int ShotsTotal { get; set; } = 0;
+
+    [BsonElement("ShotsCompleted")]
+    [JsonPropertyName("ShotsCompleted")]
+    [BsonDefaultValue("0")]
+    public int ShotsCompleted { get; set; } = 0;
 
     [BsonElement("Shots")]
     [JsonPropertyName("Shots")]
-    public List<Shot>? Shots { get; set; }
+    [BsonDefaultValue("[]")]
+    public List<Shot> Shots { get; set; } = new List<Shot>();
 
-    public Sequence cloneSequence()
-    {
+    /*public Sequence cloneSequence(){
         Sequence newSequence = new Sequence();
 
         newSequence.Id = this.Id;
         newSequence.Number = this.Number;
         newSequence.Title = this.Title;
         newSequence.Description = this.Description;
-        newSequence.Date = this.Date;
-        newSequence.Time = this.Time;
-        if (this.Shots == null)
-            newSequence.Shots = null;
-        else
-            for (int i = 0; i < this.Shots.Count; i++)
-            {
-                Shots[i] = this.Shots[i].cloneShot();
-            }
+        newSequence.BeginDate = this.BeginDate;
+        newSequence.EndDate = this.EndDate;
+        newSequence.ShotsTotal = this.ShotsTotal;
+        newSequence.ShotsCompleted = this.ShotsCompleted;
+
+        for (int i = 0; i < this.Shots.Count; i++)
+        {
+            Shots[i] = this.Shots[i].cloneShot();
+        }
 
         return newSequence;
-    }
+    }*/
 }
