@@ -44,8 +44,9 @@ public class LoginController : ControllerBase
                 return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return BadRequest("An error occurred while generating the token");
         }
 
