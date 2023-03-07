@@ -15,27 +15,46 @@ public class Episode
     [JsonPropertyName("Number")]
     public int Number { get; set; }
 
+    [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [BsonDefaultValue("")]
+    public string? Description { get; set; } = "";
 
     [BsonElement("Director")]
     [JsonPropertyName("Director")]
-    public string? Director { get; set; }
+    [BsonDefaultValue("")]
+    public string Director { get; set; } = "";
 
     [BsonElement("Writer")]
     [JsonPropertyName("Writer")]
-    public string? Writer { get; set; }
+    [BsonDefaultValue("")]
+    public string Writer { get; set; } = "";
+
+    [BsonElement("ShotsTotal")]
+    [JsonPropertyName("ShotsTotal")]
+    [BsonDefaultValue("0")]
+    public int ShotsTotal { get; set; } = 0;
+
+    [BsonElement("ShotsCompleted")]
+    [JsonPropertyName("ShotsCompleted")]
+    [BsonDefaultValue("0")]
+    public int ShotsCompleted { get; set; } = 0;
 
     [BsonElement("Sequences")]
     [JsonPropertyName("Sequences")]
-    public List<Sequence>? Sequences { get; set; }
+    [BsonDefaultValue("[]")]
+    public List<Sequence> Sequences { get; set; } = new List<Sequence>();
 
-    public Episode cloneEpisode(){
+    public void setId(){
+        this.Id = ObjectId.GenerateNewId().ToString();
+    }
+    
+    /*public Episode cloneEpisode(){
         Episode newEpisode = new Episode();
 
         newEpisode.Id = this.Id;
@@ -44,14 +63,14 @@ public class Episode
         newEpisode.Description = this.Description;
         newEpisode.Director = this.Director;
         newEpisode.Writer = this.Writer;
-        if (this.Sequences == null)
-            newEpisode.Sequences = null;
-        else
-            for (int i = 0; i < this.Sequences.Count; i++)
-            {
-                Sequences[i] = this.Sequences[i].cloneSequence();
-            }
+        newEpisode.ShotsTotal = this.ShotsTotal;
+        newEpisode.ShotsCompleted = this.ShotsCompleted;
+
+        for (int i = 0; i < this.Sequences.Count; i++)
+        {
+            Sequences[i] = this.Sequences[i].cloneSequence();
+        }
 
         return newEpisode;
-    }
+    }*/
 }

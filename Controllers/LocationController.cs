@@ -48,15 +48,9 @@ public class LocationsController : ControllerBase
             return NotFound();
         }
 
-        Location newLocation = location.cloneLocation();
+        updatedLocation.Id = location.Id;
 
-        if (updatedLocation.Name != null)
-            newLocation.Name = updatedLocation.Name;
-
-        if (updatedLocation.Link != null)
-            newLocation.Link = updatedLocation.Link;
-
-        await _locationsService.UpdateAsync(id, newLocation);
+        await _locationsService.UpdateAsync(id, updatedLocation);
 
         return NoContent();
     }

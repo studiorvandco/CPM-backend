@@ -47,18 +47,9 @@ public class MembersController : ControllerBase
             return NotFound();
         }
 
-        Member newMember = member.cloneMember();
+        updatedMember.Id = member.Id;
 
-        if (updatedMember.FirstName != null)
-            newMember.FirstName = updatedMember.FirstName;
-
-        if (updatedMember.LastName != null)
-            newMember.LastName = updatedMember.LastName;
-
-        if (updatedMember.PhoneNumber != null)
-            newMember.PhoneNumber = updatedMember.PhoneNumber;
-
-        await _membersService.UpdateAsync(id, newMember);
+        await _membersService.UpdateAsync(id, updatedMember);
 
         return NoContent();
     }

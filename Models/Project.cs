@@ -10,45 +10,52 @@ public class Project
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
+    [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [BsonDefaultValue("")]
+    public string? Description { get; set; } = "";
 
+    [BsonRequired]
     [BsonElement("BeginDate")]
     [JsonPropertyName("BeginDate")]
-    public DateTimeOffset? BeginDate { get; set; }
+    public DateTimeOffset BeginDate { get; set; }
 
+    [BsonRequired]
     [BsonElement("EndDate")]
     [JsonPropertyName("EndDate")]
-    public DateTimeOffset? EndDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
 
-    [BsonRequired]
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("ShotsTotal")]
-    public int ShotsTotal { get; set; }
+    [BsonDefaultValue("0")]
+    public int ShotsTotal { get; set; } = 0;
 
-    [BsonRequired]
     [BsonElement("ShotsCompleted")]
     [JsonPropertyName("ShotsCompleted")]
-    public int ShotsCompleted { get; set; }
+    [BsonDefaultValue("0")]
+    public int ShotsCompleted { get; set; } = 0;
 
+    [BsonRequired]
     [BsonElement("isFilm")]
     [JsonPropertyName("isFilm")]
-    public Boolean? isFilm { get; set; }
+    public Boolean isFilm { get; set; }
 
+    [BsonRequired]
     [BsonElement("isSerie")]
     [JsonPropertyName("isSerie")]
-    public Boolean? isSerie { get; set; }
+    public Boolean isSerie { get; set; }
 
     [BsonElement("Episodes")]
     [JsonPropertyName("Episodes")]
-    public List<Episode>? Episodes { get; set; }
+    [BsonDefaultValue("[]")]
+    public List<Episode> Episodes { get; set; } = new List<Episode>();
 
-    public Project cloneProject(){
+    /*public Project cloneProject(){
         Project newProject = new Project();
 
         newProject.Id = this.Id;
@@ -62,14 +69,11 @@ public class Project
         newProject.isSerie = this.isSerie;
         newProject.Episodes = this.Episodes;
 
-        if (this.Episodes == null)
-            newProject.Episodes = null;
-        else
-            for (int i = 0; i < this.Episodes.Count; i++)
-            {
-                Episodes[i] = this.Episodes[i].cloneEpisode();
-            }
+        for (int i = 0; i < this.Episodes.Count; i++)
+        {
+            Episodes[i] = this.Episodes[i].cloneEpisode();
+        }
 
         return newProject;
-    }
+    }*/
 }

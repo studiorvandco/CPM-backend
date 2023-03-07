@@ -49,34 +49,9 @@ public class ProjectsController : ControllerBase
             return NotFound();
         } 
 
-        Project newProject = project.cloneProject();
+        updatedProject.Id = project.Id;
 
-        if (updatedProject.Title != null)
-            newProject.Title = updatedProject.Title;
-
-        if (updatedProject.Description != null)
-            newProject.Description = updatedProject.Description;
-
-        if (updatedProject.BeginDate != null)
-            newProject.BeginDate = updatedProject.BeginDate;
-        
-        if (updatedProject.EndDate != null)
-            newProject.EndDate = updatedProject.EndDate;
-        
-        // WARNING : We always replace new value here
-        newProject.ShotsTotal = updatedProject.ShotsTotal;
-        newProject.ShotsCompleted = updatedProject.ShotsCompleted;
-
-        if (updatedProject.isFilm != null)
-            newProject.isFilm = updatedProject.isFilm;
-
-        if (updatedProject.isSerie != null)
-            newProject.isSerie = updatedProject.isSerie;
-
-        if (updatedProject.Episodes != null)
-            newProject.Episodes = updatedProject.Episodes;
-
-        await _ProjectsService.UpdateAsync(id, newProject);
+        await _ProjectsService.UpdateAsync(id, updatedProject);
 
         return NoContent();
     }
