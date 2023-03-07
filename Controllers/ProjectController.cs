@@ -47,7 +47,7 @@ public class ProjectsController : ControllerBase
         if (project is null)
         {
             return NotFound();
-        } 
+        }
 
         updatedProject.Id = project.Id;
 

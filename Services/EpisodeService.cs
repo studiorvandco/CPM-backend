@@ -25,9 +25,10 @@ public class EpisodesService
                                 .Project(p => p.Episodes)
                                 .ToListAsync()
                                 .ContinueWith(t => t.Result.SelectMany(e => e).ToList());
-        //await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(Project => Project.Id, idProject)).ToListAsync();
-    
-    public async Task<Episode?> GetAsync(string idProject, string idEpisode) {
+    //await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(Project => Project.Id, idProject)).ToListAsync();
+
+    public async Task<Episode?> GetAsync(string idProject, string idEpisode)
+    {
         var episodes = await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
                                                 .Project(p => p.Episodes)
                                                 .ToListAsync();
@@ -47,7 +48,8 @@ public class EpisodesService
     }
 
 
-    public async Task RemoveAsync(string projectId, string episodeId) {
+    public async Task RemoveAsync(string projectId, string episodeId)
+    {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
@@ -64,10 +66,10 @@ public class EpisodesService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
-        
+
         var update = Builders<Project>.Update
             .Set("Episodes.$", newEpisode);
-        
+
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 

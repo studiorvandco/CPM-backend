@@ -50,10 +50,11 @@ public class Episode
     [BsonDefaultValue("[]")]
     public List<Sequence> Sequences { get; set; } = new List<Sequence>();
 
-    public void setId(){
+    public void setId()
+    {
         this.Id = ObjectId.GenerateNewId().ToString();
     }
-    
+
     /*public Episode cloneEpisode(){
         Episode newEpisode = new Episode();
 
