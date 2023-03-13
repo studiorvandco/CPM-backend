@@ -25,8 +25,7 @@ public class EpisodesService
                                 .Project(p => p.Episodes)
                                 .ToListAsync()
                                 .ContinueWith(t => t.Result.SelectMany(e => e).ToList());
-        //await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(Project => Project.Id, idProject)).ToListAsync();
-    
+                                
     public async Task<Episode?> GetAsync(string idProject, string idEpisode) {
         var episodes = await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
                                                 .Project(p => p.Episodes)

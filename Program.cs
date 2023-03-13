@@ -14,6 +14,8 @@ builder.Services.AddSingleton<LocationsService>();
 builder.Services.AddSingleton<MembersService>();
 builder.Services.AddSingleton<ProjectsService>();
 builder.Services.AddSingleton<EpisodesService>();
+builder.Services.AddSingleton<SequencesService>();
+builder.Services.AddSingleton<ShotsService>();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);

@@ -28,6 +28,8 @@ public class EpisodesController : ControllerBase
             return NotFound();
         }
 
+        Episode.Sequences = new List<Sequence>();
+
         return Episode;
     }
 
@@ -62,9 +64,9 @@ public class EpisodesController : ControllerBase
     [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]
     public async Task<IActionResult> Delete(string idProject, string idEpisode)
     {
-        var Project = await _EpisodesService.GetAsync(idProject, idEpisode);
+        var episode = await _EpisodesService.GetAsync(idProject, idEpisode);
 
-        if (Project is null)
+        if (episode is null)
         {
             return NotFound();
         }

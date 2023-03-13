@@ -1,4 +1,4 @@
-/*using CPMApi.Models;
+using CPMApi.Models;
 using CPMApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +14,14 @@ public class ShotsController : ControllerBase
     public ShotsController(ShotsService ShotsService) =>
         _ShotsService = ShotsService;
 
-    [HttpGet, Authorize]
-    public async Task<List<Shot>> Get() =>
-        await _ShotsService.GetAsync();
+    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
+    public async Task<List<Shot>> Get(string idProject, string idEpisode, string idSequence) =>
+        await _ShotsService.GetAsync(idProject, idEpisode, idSequence);
 
-    [HttpGet("{id:length(24)}"), Authorize]
-    public async Task<ActionResult<Shot>> Get(string id)
+    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"), Authorize]
+    public async Task<ActionResult<Shot>> Get(string idProject, string idEpisode, string idSequence, string idShot)
     {
-        var Shot = await _ShotsService.GetAsync(id);
+        var Shot = await _ShotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
         if (Shot is null)
         {
@@ -31,59 +31,43 @@ public class ShotsController : ControllerBase
         return Shot;
     }
 
-    [HttpPost, Authorize]
-    public async Task<IActionResult> Post(Shot newShot)
+    [HttpPost("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
+    public async Task<IActionResult> Post(string idProject, string idEpisode, string idSequence, Shot newShot)
     {
-        await _ShotsService.CreateAsync(newShot);
+        await _ShotsService.CreateAsync(idProject, idEpisode, idSequence, newShot);
 
         return CreatedAtAction(nameof(Get), new { id = newShot.Id }, newShot);
     }
 
-    [HttpPut("{id:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string id, Shot updatedShot)
+    // TODO : à finir quand le service Update sera opérationnel
+
+    /*[HttpPut("{id:length(24)}"), Authorize]
+    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, string idShot, Shot updatedShot)
     {
-        var Shot = await _ShotsService.GetAsync(id);
-
-        if (Shot is null)
-        {
-            return NotFound();
-        } 
-
-        Shot newShot = Shot.cloneShot();
-
-        // WARNING : We always replace new value here
-        newShot.Number = updatedShot.Number;
-
-        if (updatedShot.Title != null)
-            newShot.Title = updatedShot.Title;
-
-        if (updatedShot.Value != null)
-            newShot.Value = updatedShot.Value;
-
-        if (updatedShot.Description != null)
-            newShot.Description = updatedShot.Description;
-
-        if (updatedShot.Completed != false)
-            newShot.Completed = updatedShot.Completed;
-
-        await _ShotsService.UpdateAsync(id, newShot);
-
-        return NoContent();
-    }
-
-    [HttpDelete("{id:length(24)}"), Authorize]
-    public async Task<IActionResult> Delete(string id)
-    {
-        var Shot = await _ShotsService.GetAsync(id);
+        var Shot = await _ShotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
         if (Shot is null)
         {
             return NotFound();
         }
 
-        await _ShotsService.RemoveAsync(id);
+        await _ShotsService.UpdateAsync(idProject, idEpisode, idSequence, idShot, updatedShot);
+
+        return NoContent();
+    } */
+
+    [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"), Authorize]
+    public async Task<IActionResult> Delete(string idProject, string idEpisode, string idSequence, string idShot)
+    {
+        var Shot = await _ShotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
+
+        if (Shot is null)
+        {
+            return NotFound();
+        }
+
+        await _ShotsService.RemoveAsync(idProject, idEpisode, idSequence, idShot);
 
         return NoContent();
     }
 }
-*/

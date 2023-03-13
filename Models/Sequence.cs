@@ -50,6 +50,10 @@ public class Sequence
     [BsonDefaultValue("[]")]
     public List<Shot> Shots { get; set; } = new List<Shot>();
 
+    public void setId(){
+        this.Id = ObjectId.GenerateNewId().ToString();
+    }
+
     /*public Sequence cloneSequence(){
         Sequence newSequence = new Sequence();
 

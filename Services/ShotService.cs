@@ -1,4 +1,4 @@
-/*using CPMApi.Models;
+using CPMApi.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -19,79 +19,72 @@ public class ShotsService
         );
     }
 
-    public async Task<List<Shot>> GetShotsAsync(string projectId, string episodeId, string sequenceId)
+    public async Task<List<Shot>> GetAsync(string idProject, string idEpisode, string idSequence)
+    {
+        var project = await _ProjectsCollection.Find(p => p.Id == idProject).FirstOrDefaultAsync();
+
+        if (project == null)
+            return new List<Shot>();
+
+        var episode = project.Episodes.FirstOrDefault(e => e.Id == idEpisode);
+
+        if (episode == null)
+            return new List<Shot>();
+
+        var sequence = episode.Sequences.FirstOrDefault(s => s.Id == idSequence);
+
+        if (sequence == null)
+            return new List<Shot>();
+
+        return sequence.Shots;
+    }
+
+    public async Task<Shot?> GetAsync(string idProject, string idEpisode, string idSequence, string idShot)
+    {
+        var episodes = await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
+                                                .Project(p => p.Episodes)
+                                                .ToListAsync();
+
+        var episode = episodes.SelectMany(e => e)
+                            .FirstOrDefault(e => e.Id == idEpisode);
+
+        var sequence = episode?.Sequences.FirstOrDefault(s => s.Id == idSequence);
+
+        var shot = sequence?.Shots.FirstOrDefault(s => s.Id == idShot);
+
+        return shot;
+    }
+
+    public async Task CreateAsync(string projectId, string episodeId, string sequenceId, Shot shot)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[-1].Sequences, s => s.Id == sequenceId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[-1].Sequences[-1].Shots, sh => true)
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
+        );
+        
+        var test = _ProjectsCollection.Find(filter).First();
+        Console.Write(test);
+
+        var update = Builders<Project>.Update.Push(s => s.Episodes[0].Sequences[0].Shots, shot);
+
+        await _ProjectsCollection.UpdateOneAsync(filter, update);
+    }
+
+    public async Task RemoveAsync(string projectId, string episodeId, string sequenceId, string shotId)
+    {
+        var filter = Builders<Project>.Filter.And(
+            Builders<Project>.Filter.Eq(p => p.Id, projectId),
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId),
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences[0].Shots, sh => sh.Id == shotId)
         );
 
-        var projection = Builders<Project>.Projection
-            .Include(p => p.Episodes[-1].Sequences[-1].Shots);
+        var update = Builders<Project>.Update.PullFilter(s => s.Episodes[0].Sequences[0].Shots, sh => sh.Id == shotId);
 
-        var result = await _ProjectsCollection.Find(filter).Project(projection).FirstOrDefaultAsync();
-
-        if (result == null || result.Episodes.Count == 0 || result.Episodes[0].Sequences.Count == 0)
-        {
-            return new List<Shot>();
-        }
-
-        return result.Episodes[0].Sequences[0].Shots;
+        var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-public async Task<List<Shot>> GetAsync(string projectId, string episodeId, string sequenceId)
-{
-    var filterBuilder = Builders<Project>.Filter;
-    var filter = filterBuilder.And(
-        filterBuilder.Eq(p => p.Id, projectId),
-        filterBuilder.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-        filterBuilder.ElemMatch(p => p.Episodes[-1].Sequences, s => s.Id == sequenceId)
-    );
-
-    var projectionBuilder = Builders<Project>.Projection;
-    var projection = projectionBuilder.Include("Episodes.Sequences.Shots");
-
-    var result = await _ProjectsCollection.Find(filter)
-                                .Project(projection)
-                                .FirstOrDefaultAsync();
-
-    if (result == null)
-    {
-        return new List<Shot>();
-    }
-
-    var episode = result.Episodes.FirstOrDefault(e => e.Id == episodeId);
-    if (episode == null)
-    {
-        return new List<Shot>();
-    }
-
-    var sequence = episode.Sequences.FirstOrDefault(s => s.Id == sequenceId);
-    if (sequence == null)
-    {
-        return new List<Shot>();
-    }
-
-    return sequence.Shots ?? new List<Shot>();
+    // TODO : UpdateAsync
+    
 }
-
-
-
-    //public async Task<List<Shot>> GetAsync() =>
-      //  await _ProjectsCollection.Find(_ => true).ToListAsync();
-
-    //public async Task<Shot?> GetAsync(string id) =>
-      //  await _ShotsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
-
-    //public async Task CreateAsync(Shot newShot) =>
-      //  await _ShotsCollection.InsertOneAsync(newShot);
-
-    //public async Task UpdateAsync(string id, Shot updatedShot) =>
-      //  await _ShotsCollection.ReplaceOneAsync(x => x.Id == id, updatedShot);
-
-    //public async Task RemoveAsync(string id) =>
-      //  await _ShotsCollection.DeleteOneAsync(x => x.Id == id);
-}
-*/
