@@ -46,7 +46,8 @@ public class EpisodesService
     }
 
 
-    public async Task RemoveAsync(string projectId, string episodeId) {
+    public async Task RemoveAsync(string projectId, string episodeId)
+    {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
@@ -63,10 +64,10 @@ public class EpisodesService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
-        
+
         var update = Builders<Project>.Update
             .Set("Episodes.$", newEpisode);
-        
+
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 

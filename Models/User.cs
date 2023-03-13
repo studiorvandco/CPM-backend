@@ -20,7 +20,8 @@ public class User
     [JsonPropertyName("Password")]
     public string Password { get; set; } = null!;
 
-    public User cloneUser(){
+    public User cloneUser()
+    {
         User newUser = new User();
 
         newUser.Id = this.Id;
