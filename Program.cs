@@ -90,6 +90,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseCors(builder =>
     builder.AllowAnyOrigin()
+           .AllowAnyMethod()
            .WithHeaders(
                 HeaderNames.ContentType,
                 HeaderNames.Authorization

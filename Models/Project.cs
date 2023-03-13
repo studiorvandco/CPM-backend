@@ -46,9 +46,9 @@ public class Project
     public Boolean isFilm { get; set; }
 
     [BsonRequired]
-    [BsonElement("isSerie")]
-    [JsonPropertyName("isSerie")]
-    public Boolean isSerie { get; set; }
+    [BsonElement("isSeries")]
+    [JsonPropertyName("isSeries")]
+    public Boolean isSeries { get; set; }
 
     [BsonElement("Episodes")]
     [JsonPropertyName("Episodes")]
