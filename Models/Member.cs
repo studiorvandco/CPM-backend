@@ -20,10 +20,10 @@ public class Member
     [BsonDefaultValue("")]
     public string LastName { get; set; } = "";
 
-    [BsonElement("PhoneNumber")]
-    [JsonPropertyName("PhoneNumber")]
+    [BsonElement("Phone")]
+    [JsonPropertyName("Phone")]
     [BsonDefaultValue("")]
-    public string PhoneNumber { get; set; } = "";
+    public string Phone { get; set; } = "";
 
     /*public Member cloneMember(){
         Member newMember = new Member();
