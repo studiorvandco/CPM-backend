@@ -13,27 +13,27 @@ public class Episode
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("Number")]
-    public int Number { get; set; }
+    public int Number { get; set; } = 0;
 
     [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string Title { get; set; } = null!;
+    public string? Title { get; set; }
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
     [BsonDefaultValue("")]
-    public string? Description { get; set; } = "";
+    public string? Description { get; set; }
 
     [BsonElement("Director")]
     [JsonPropertyName("Director")]
     [BsonDefaultValue("")]
-    public string Director { get; set; } = "";
+    public string? Director { get; set; }
 
     [BsonElement("Writer")]
     [JsonPropertyName("Writer")]
     [BsonDefaultValue("")]
-    public string Writer { get; set; } = "";
+    public string? Writer { get; set; }
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("ShotsTotal")]
@@ -53,6 +53,14 @@ public class Episode
     public void setId()
     {
         this.Id = ObjectId.GenerateNewId().ToString();
+    }
+
+    public Episode WithDefaults() {
+        this.Title ??= "";
+        this.Description ??= "";
+        this.Director ??= "";
+        this.Writer ??= "";
+        return this;
     }
 
     /*public Episode cloneEpisode(){

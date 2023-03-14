@@ -32,17 +32,15 @@ public class ProjectsService
         var filter = Builders<Project>.Filter.Eq(p => p.Id, id);
         var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
 
-        if (project == null) {
-            await CreateAsync(updatedProject.WithDefaults());
-        } else {
-            var update = Builders<Project>.Update
-                .Set(p => p.Title, updatedProject.Title ?? project.Title)
-                .Set(p => p.Description, updatedProject.Description ?? project.Description)
-                .Set(p => p.BeginDate, updatedProject.BeginDate ?? project.BeginDate)
-                .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate);
-            
-            await _ProjectsCollection.UpdateOneAsync(filter, update);
-        }
+        if (project == null) return;
+        
+        var update = Builders<Project>.Update
+            .Set(p => p.Title, updatedProject.Title ?? project.Title)
+            .Set(p => p.Description, updatedProject.Description ?? project.Description)
+            .Set(p => p.BeginDate, updatedProject.BeginDate ?? project.BeginDate)
+            .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate);
+        
+        await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
     public async Task RemoveAsync(string id) =>

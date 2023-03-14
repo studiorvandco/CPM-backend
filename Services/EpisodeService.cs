@@ -1,7 +1,7 @@
 using CPMApi.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Linq;
 
 namespace CPMApi.Services;
 
@@ -40,7 +40,16 @@ public class EpisodesService
     public async Task CreateAsync(string projectId, Episode episode)
     {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, projectId);
-        var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
+        if (episode.Number <= 0) {
+            var project = _ProjectsCollection.Find(filter).First();
+            if (project.Episodes.Count == 0) {
+                episode.Number = 1;
+            } else {
+                episode.Number = project.Episodes.Max(e => e.Number) + 1;
+            }
+        }
+        
+        var update = Builders<Project>.Update.Push(p => p.Episodes, episode.WithDefaults());
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
@@ -58,17 +67,25 @@ public class EpisodesService
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task UpdateAsync(string projectId, string episodeId, Episode newEpisode)
+    public async Task UpdateAsync(string projectId, string episodeId, Episode updatedEpisode)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
+        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+        var episode = project.Episodes.FirstOrDefault(e => e.Id == episodeId);
+
+        if (project == null || episode == null)
+            return;
 
         var update = Builders<Project>.Update
-            .Set("Episodes.$", newEpisode);
-
-        var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
+            .Set(p => p.Episodes.FirstMatchingElement().Title, updatedEpisode.Title ?? episode.Title)
+            .Set(p => p.Episodes.FirstMatchingElement().Description, updatedEpisode.Description ?? episode.Description)
+            .Set(p => p.Episodes.FirstMatchingElement().Writer, updatedEpisode.Writer ?? episode.Writer)
+            .Set(p => p.Episodes.FirstMatchingElement().Director, updatedEpisode.Director ?? episode.Director);
+        
+        await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
 }
