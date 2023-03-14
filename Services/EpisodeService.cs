@@ -80,6 +80,7 @@ public class EpisodesService
             return;
 
         var update = Builders<Project>.Update
+            .Set(p => p.Episodes.FirstMatchingElement().Number, updatedEpisode.Number == 0 ? episode.Number : updatedEpisode.Number)
             .Set(p => p.Episodes.FirstMatchingElement().Title, updatedEpisode.Title ?? episode.Title)
             .Set(p => p.Episodes.FirstMatchingElement().Description, updatedEpisode.Description ?? episode.Description)
             .Set(p => p.Episodes.FirstMatchingElement().Writer, updatedEpisode.Writer ?? episode.Writer)
