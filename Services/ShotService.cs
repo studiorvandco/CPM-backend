@@ -66,7 +66,7 @@ public class ShotsService
         var test = _ProjectsCollection.Find(filter).First();
         Console.Write(test);
 
-        var update = Builders<Project>.Update.Push(s => s.Episodes[0].Sequences[0].Shots, shot);
+        var update = Builders<Project>.Update.Push(p => p.Episodes[0].Sequences[0].Shots, shot);
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
