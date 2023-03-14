@@ -36,7 +36,7 @@ public class ShotsController : ControllerBase
     {
         await _ShotsService.CreateAsync(idProject, idEpisode, idSequence, newShot);
 
-        return CreatedAtAction(nameof(Get), new { id = newShot.Id }, newShot);
+        return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence, idShot = newShot.Id }, newShot);
     }
 
     // TODO : à finir quand le service Update sera opérationnel

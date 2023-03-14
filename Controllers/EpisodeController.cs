@@ -41,7 +41,7 @@ public class EpisodesController : ControllerBase
 
         await _EpisodesService.CreateAsync(idProject, episode);
 
-        return CreatedAtAction(nameof(Get), new { idProject = idProject, idEpisode = episode.Id }, episode);
+        return CreatedAtAction(nameof(Get), new { idProject, idEpisode = episode.Id }, episode);
     }
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]

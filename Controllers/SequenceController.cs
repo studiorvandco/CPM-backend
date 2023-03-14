@@ -39,7 +39,7 @@ public class SequencesController : ControllerBase
 
         await _SequencesService.CreateAsync(idProject, idEpisode, sequence);
 
-        return CreatedAtAction(nameof(Get), new { idProject = idProject, idEpisode = sequence.Id }, sequence);
+        return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence = sequence.Id }, sequence);
     }
 
     //A décommenter quand le service Update sera fonctionnel
