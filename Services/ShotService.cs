@@ -62,9 +62,6 @@ public class ShotsService
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
         );
-        
-        var test = _ProjectsCollection.Find(filter).First();
-        Console.Write(test);
 
         var update = Builders<Project>.Update.Push(p => p.Episodes[0].Sequences[0].Shots, shot);
 
