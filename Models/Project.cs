@@ -13,22 +13,22 @@ public class Project
     [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string Title { get; set; } = null!;
+    public string? Title { get; set; }
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
     [BsonDefaultValue("")]
-    public string? Description { get; set; } = "";
+    public string? Description { get; set; }
 
     [BsonRequired]
     [BsonElement("BeginDate")]
     [JsonPropertyName("BeginDate")]
-    public DateTimeOffset BeginDate { get; set; }
+    public DateTimeOffset? BeginDate { get; set; }
 
     [BsonRequired]
     [BsonElement("EndDate")]
     [JsonPropertyName("EndDate")]
-    public DateTimeOffset EndDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("ShotsTotal")]
@@ -54,6 +54,14 @@ public class Project
     [JsonPropertyName("Episodes")]
     [BsonDefaultValue("[]")]
     public List<Episode> Episodes { get; set; } = new List<Episode>();
+
+    public Project WithDefaults() {
+        this.Title ??= "";
+        this.Description ??= "";
+        this.BeginDate ??= DateTimeOffset.MinValue;
+        this.EndDate ??= DateTimeOffset.MinValue;
+        return this;
+    }
 
     /*public Project cloneProject(){
         Project newProject = new Project();
