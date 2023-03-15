@@ -58,12 +58,14 @@ public class SequencesService
         );
 
         if (sequence.Number <= 0) {
-            var project = _ProjectsCollection.Find(filter).First();
-            var episode = project.Episodes.Find(e => e.Id == episodeId);
-            if (episode != null && episode.Sequences.Count > 0) {
-                sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
-            } else {
+            var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
+            if (episode == null) return;
+
+            if (episode.Sequences.Count == 0) {
                 sequence.Number = 1;
+            } else {
+                sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
             }
         }
 
@@ -75,12 +77,15 @@ public class SequencesService
     public async Task RemoveAsync(string projectId, string episodeId, string sequenceId)
     {
         var filter = Builders<Project>.Filter.And(
-        Builders<Project>.Filter.Eq(p => p.Id, projectId),
-        Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-        Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
+            Builders<Project>.Filter.Eq(p => p.Id, projectId),
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
+                e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
+            )
         );
 
-        var update = Builders<Project>.Update.PullFilter(e => e.Episodes[0].Sequences, s => s.Id == sequenceId);
+        var update = Builders<Project>.Update.PullFilter(e =>
+            e.Episodes.FirstMatchingElement().Sequences, s => s.Id == sequenceId
+        );
 
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
@@ -93,13 +98,10 @@ public class SequencesService
                 e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
             )
         );
-        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
-        var episode = project.Episodes.FirstOrDefault(e => e.Id == episodeId);
-
-        if (project == null || episode == null)
-            return;
-
-        var sequence = episode.Sequences.FirstOrDefault(s => s.Id == sequenceId);
+        
+        var sequence = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
+                            ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
         if (sequence == null) return;
 
         var update = Builders<Project>.Update
