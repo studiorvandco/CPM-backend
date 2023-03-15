@@ -1,8 +1,8 @@
 using CPMApi.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using MongoDB.Bson;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CPMApi.Services;
 
@@ -56,7 +56,18 @@ public class SequencesService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
-        var update = Builders<Project>.Update.Push(e => e.Episodes[0].Sequences, sequence);
+
+        if (sequence.Number <= 0) {
+            var project = _ProjectsCollection.Find(filter).First();
+            var episode = project.Episodes.Find(e => e.Id == episodeId);
+            if (episode != null && episode.Sequences.Count > 0) {
+                sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
+            } else {
+                sequence.Number = 1;
+            }
+        }
+
+        var update = Builders<Project>.Update.Push(e => e.Episodes.FirstMatchingElement().Sequences, sequence.WithDefaults());
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
@@ -74,41 +85,53 @@ public class SequencesService
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-    // TODO: Corriger la fonction UpdateAsync()
-    // Problème au niveau du filtre update
-
-    /*public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, Sequence newSequence)
+    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, Sequence updatedSequence)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
+                e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
+            )
         );
+        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+        var episode = project.Episodes.FirstOrDefault(e => e.Id == episodeId);
 
-        var update = Builders<Project>.Update.Set("Episodes.$[elemMatch].Sequences.$", newSequence);
+        if (project == null || episode == null)
+            return;
 
-        var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
-    }*/
+        var sequence = episode.Sequences.FirstOrDefault(s => s.Id == sequenceId);
+        if (sequence == null) return;
 
-    /*public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, Sequence newSequence)
-    {
-        var filter = Builders<Project>.Filter.And(
-            Builders<Project>.Filter.Eq(p => p.Id, projectId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
-        );
-
-        var update = Builders<Project>.Update.Set("Episodes.$[elemMatch].Sequence", newSequence);
-
-        var options = new UpdateOptions { 
-            ArrayFilters = new List<ArrayFilterDefinition<Project>> { 
-                new BsonDocumentArrayFilterDefinition<Project>(
-                    new BsonDocument($"episodes.id", episodeId)
-                )
-            } 
+        var update = Builders<Project>.Update
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").Title, 
+                updatedSequence.Title ?? sequence.Title)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").Description, 
+                updatedSequence.Description ?? sequence.Description)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").BeginDate, 
+                updatedSequence.BeginDate ?? sequence.BeginDate)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").EndDate, 
+                updatedSequence.EndDate ?? sequence.EndDate)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").Number, 
+                updatedSequence.Number == 0 ? sequence.Number : updatedSequence.Number);
+                
+        var options = new UpdateOptions {
+            ArrayFilters = new List<ArrayFilterDefinition> {
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
+            }
         };
-
-        var result = await _ProjectsCollection.UpdateOneAsync(filter, update, options);
-    }*/
+        
+        await _ProjectsCollection.UpdateOneAsync(filter, update, options);
+    }
 
 }

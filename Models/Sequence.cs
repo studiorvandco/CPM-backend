@@ -13,27 +13,27 @@ public class Sequence
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("Number")]
-    public int Number { get; set; }
+    public int Number { get; set; } = 0;
 
     [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string Title { get; set; } = null!;
+    public string? Title { get; set; }
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string? Description { get; set; }
 
     [BsonRequired]
     [BsonElement("BeginDate")]
     [JsonPropertyName("BeginDate")]
-    public DateTimeOffset BeginDate { get; set; }
+    public DateTimeOffset? BeginDate { get; set; }
 
     [BsonRequired]
     [BsonElement("EndDate")]
     [JsonPropertyName("EndDate")]
-    public DateTimeOffset EndDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("ShotsTotal")]
@@ -52,6 +52,14 @@ public class Sequence
 
     public void setId(){
         this.Id = ObjectId.GenerateNewId().ToString();
+    }
+
+    public Sequence WithDefaults() {
+        this.Title ??= "";
+        this.Description ??= "";
+        this.BeginDate ??= DateTimeOffset.MinValue;
+        this.EndDate ??= DateTimeOffset.MinValue;
+        return this;
     }
 
     /*public Sequence cloneSequence(){
