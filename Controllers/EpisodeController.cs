@@ -45,7 +45,7 @@ public class EpisodesController : ControllerBase
     }
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, Episode uptadeEpisode)
+    public async Task<IActionResult> Update(string idProject, string idEpisode, Episode updatedEpisode)
     {
         var episode = await _EpisodesService.GetAsync(idProject, idEpisode);
 
@@ -54,9 +54,9 @@ public class EpisodesController : ControllerBase
             return NotFound();
         }
 
-        uptadeEpisode.Id = episode.Id;
+        updatedEpisode.Id = episode.Id;
 
-        await _EpisodesService.UpdateAsync(idProject, idEpisode, uptadeEpisode);
+        await _EpisodesService.UpdateAsync(idProject, idEpisode, updatedEpisode);
 
         return NoContent();
     }
