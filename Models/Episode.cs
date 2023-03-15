@@ -50,12 +50,8 @@ public class Episode
     [BsonDefaultValue("[]")]
     public List<Sequence> Sequences { get; set; } = new List<Sequence>();
 
-    public void setId()
-    {
-        this.Id = ObjectId.GenerateNewId().ToString();
-    }
-
     public Episode WithDefaults() {
+        this.Id = ObjectId.GenerateNewId().ToString();
         this.Title ??= "";
         this.Description ??= "";
         this.Director ??= "";
@@ -63,23 +59,4 @@ public class Episode
         return this;
     }
 
-    /*public Episode cloneEpisode(){
-        Episode newEpisode = new Episode();
-
-        newEpisode.Id = this.Id;
-        newEpisode.Number = this.Number;
-        newEpisode.Title = this.Title;
-        newEpisode.Description = this.Description;
-        newEpisode.Director = this.Director;
-        newEpisode.Writer = this.Writer;
-        newEpisode.ShotsTotal = this.ShotsTotal;
-        newEpisode.ShotsCompleted = this.ShotsCompleted;
-
-        for (int i = 0; i < this.Sequences.Count; i++)
-        {
-            Sequences[i] = this.Sequences[i].cloneSequence();
-        }
-
-        return newEpisode;
-    }*/
 }

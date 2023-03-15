@@ -36,9 +36,6 @@ public class EpisodesController : ControllerBase
     [HttpPost("{idProject:length(24)}"), Authorize]
     public async Task<IActionResult> Post(string idProject, Episode episode)
     {
-        if (episode.Id == null)
-            episode.setId();
-
         await _EpisodesService.CreateAsync(idProject, episode);
 
         return CreatedAtAction(nameof(Get), new { idProject, idEpisode = episode.Id }, episode);

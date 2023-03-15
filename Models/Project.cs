@@ -63,25 +63,4 @@ public class Project
         return this;
     }
 
-    /*public Project cloneProject(){
-        Project newProject = new Project();
-
-        newProject.Id = this.Id;
-        newProject.Title = this.Title;
-        newProject.Description = this.Description;
-        newProject.BeginDate = this.BeginDate;
-        newProject.EndDate = this.EndDate;
-        newProject.ShotsTotal = this.ShotsTotal;
-        newProject.ShotsCompleted = this.ShotsCompleted;
-        newProject.isFilm = this.isFilm;
-        newProject.isSerie = this.isSerie;
-        newProject.Episodes = this.Episodes;
-
-        for (int i = 0; i < this.Episodes.Count; i++)
-        {
-            Episodes[i] = this.Episodes[i].cloneEpisode();
-        }
-
-        return newProject;
-    }*/
 }

@@ -50,11 +50,8 @@ public class Sequence
     [BsonDefaultValue("[]")]
     public List<Shot> Shots { get; set; } = new List<Shot>();
 
-    public void setId(){
-        this.Id = ObjectId.GenerateNewId().ToString();
-    }
-
     public Sequence WithDefaults() {
+        this.Id = ObjectId.GenerateNewId().ToString();
         this.Title ??= "";
         this.Description ??= "";
         this.BeginDate ??= DateTimeOffset.MinValue;
@@ -62,23 +59,4 @@ public class Sequence
         return this;
     }
 
-    /*public Sequence cloneSequence(){
-        Sequence newSequence = new Sequence();
-
-        newSequence.Id = this.Id;
-        newSequence.Number = this.Number;
-        newSequence.Title = this.Title;
-        newSequence.Description = this.Description;
-        newSequence.BeginDate = this.BeginDate;
-        newSequence.EndDate = this.EndDate;
-        newSequence.ShotsTotal = this.ShotsTotal;
-        newSequence.ShotsCompleted = this.ShotsCompleted;
-
-        for (int i = 0; i < this.Shots.Count; i++)
-        {
-            Shots[i] = this.Shots[i].cloneShot();
-        }
-
-        return newSequence;
-    }*/
 }

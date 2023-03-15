@@ -34,9 +34,6 @@ public class SequencesController : ControllerBase
     [HttpPost("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]
     public async Task<IActionResult> Post(string idProject, string idEpisode, Sequence sequence)
     {
-        if (sequence.Id == null)
-            sequence.setId();
-
         await _SequencesService.CreateAsync(idProject, idEpisode, sequence);
 
         return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence = sequence.Id }, sequence);

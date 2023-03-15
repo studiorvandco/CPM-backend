@@ -41,7 +41,9 @@ public class EpisodesService
     {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, projectId);
         if (episode.Number <= 0) {
-            var project = _ProjectsCollection.Find(filter).First();
+            var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+            if (project == null) return;
+            
             if (project.Episodes.Count == 0) {
                 episode.Number = 1;
             } else {
@@ -73,11 +75,10 @@ public class EpisodesService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
-        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
-        var episode = project.Episodes.FirstOrDefault(e => e.Id == episodeId);
-
-        if (project == null || episode == null)
-            return;
+        
+        var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
+        if (episode == null) return;
 
         var update = Builders<Project>.Update
             .Set(p => p.Episodes.FirstMatchingElement().Number, updatedEpisode.Number == 0 ? episode.Number : updatedEpisode.Number)
