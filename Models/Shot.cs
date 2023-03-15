@@ -18,34 +18,29 @@ public class Shot
     [BsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string Title { get; set; } = null!;
+    public string? Title { get; set; }
 
     [BsonElement("Value")]
     [JsonPropertyName("Value")]
     [BsonDefaultValue("")]
-    public string Value { get; set; } = "";
+    public string? Value { get; set; }
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string? Description { get; set; }
 
     [BsonElement("Completed")]
     [JsonPropertyName("Completed")]
     [BsonDefaultValue("false")]
     public Boolean Completed { get; set; } = false;
 
-    /*public Shot cloneShot(){
-        Shot newShot = new Shot();
-
-        newShot.Id = this.Id;
-        newShot.Number = this.Number;
-        newShot.Title = this.Title;
-        newShot.Value = this.Value;
-        newShot.Description = this.Description;
-        newShot.Completed = this.Completed;
-
-        return newShot;
-    }*/
+    public Shot WithDefaults() {
+        this.Id = ObjectId.GenerateNewId().ToString();
+        this.Title ??= "";
+        this.Description ??= "";
+        this.Value ??= "";
+        return this;
+    }
 
 }

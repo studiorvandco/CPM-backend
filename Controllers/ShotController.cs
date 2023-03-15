@@ -39,9 +39,7 @@ public class ShotsController : ControllerBase
         return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence, idShot = newShot.Id }, newShot);
     }
 
-    // TODO : à finir quand le service Update sera opérationnel
-
-    /*[HttpPut("{id:length(24)}"), Authorize]
+    [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"), Authorize]
     public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, string idShot, Shot updatedShot)
     {
         var Shot = await _ShotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
@@ -54,7 +52,7 @@ public class ShotsController : ControllerBase
         await _ShotsService.UpdateAsync(idProject, idEpisode, idSequence, idShot, updatedShot);
 
         return NoContent();
-    } */
+    }
 
     [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"), Authorize]
     public async Task<IActionResult> Delete(string idProject, string idEpisode, string idSequence, string idShot)

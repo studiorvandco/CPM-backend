@@ -1,6 +1,8 @@
 using CPMApi.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using MongoDB.Bson;
 
 namespace CPMApi.Services;
 
@@ -59,29 +61,119 @@ public class ShotsService
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId)
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
+                e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
+            )
         );
 
-        var update = Builders<Project>.Update.Push(p => p.Episodes[0].Sequences[0].Shots, shot);
+        if (shot.Number <= 0) {
+            var sequence = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
+                            ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
+            if (sequence == null) return;
 
-        await _ProjectsCollection.UpdateOneAsync(filter, update);
+            if (sequence.Shots.Count == 0) {
+                shot.Number = 1;
+            } else {
+                shot.Number = sequence.Shots.Max(e => e.Number) + 1;
+            }
+        }
+
+        var update = Builders<Project>.Update.Push(
+            p => p.Episodes.AllMatchingElements("e")
+                  .Sequences.AllMatchingElements("s").Shots, 
+            shot.WithDefaults()
+        );
+
+        var options = new UpdateOptions {
+            ArrayFilters = new List<ArrayFilterDefinition> {
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
+            }
+        };
+
+        await _ProjectsCollection.UpdateOneAsync(filter, update, options);
     }
 
     public async Task RemoveAsync(string projectId, string episodeId, string sequenceId, string shotId)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences, s => s.Id == sequenceId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes[0].Sequences[0].Shots, sh => sh.Id == shotId)
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
+                e.Id == episodeId && e.Sequences.Any(s =>
+                    s.Id == sequenceId && s.Shots.Any(h => 
+                        h.Id == shotId
+                    )
+                )
+            )
         );
 
-        var update = Builders<Project>.Update.PullFilter(s => s.Episodes[0].Sequences[0].Shots, sh => sh.Id == shotId);
+        var update = Builders<Project>.Update.PullFilter(s =>
+            s.Episodes.AllMatchingElements("e")
+                .Sequences.AllMatchingElements("s").Shots,
+            h => h.Id == shotId
+        );
 
-        var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
+        var options = new UpdateOptions {
+            ArrayFilters = new List<ArrayFilterDefinition> {
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
+            }
+        };
+
+        var result = await _ProjectsCollection.UpdateOneAsync(filter, update, options);
     }
 
-    // TODO : UpdateAsync
+    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, string shotId, Shot updatedShot)
+    {
+        var filter = Builders<Project>.Filter.And(
+            Builders<Project>.Filter.Eq(p => p.Id, projectId),
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
+                e.Id == episodeId && e.Sequences.Any(s =>
+                    s.Id == sequenceId && s.Shots.Any(h => 
+                        h.Id == shotId
+                    )
+                )
+            )
+        );
+
+        var shot = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                        ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
+                        ?.Sequences.FirstOrDefault(s => s.Id == sequenceId)
+                        ?.Shots.FirstOrDefault(h => h.Id == shotId);
+        if (shot == null) return;
+
+        var update = Builders<Project>.Update
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s")
+                      .Shots.AllMatchingElements("h").Title, 
+                updatedShot.Title ?? shot.Title)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s")
+                      .Shots.AllMatchingElements("h").Description, 
+                updatedShot.Description ?? shot.Description)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s")
+                      .Shots.AllMatchingElements("h").Value, 
+                updatedShot.Value ?? shot.Value)
+            .Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s")
+                      .Shots.AllMatchingElements("h").Number, 
+                updatedShot.Number == 0 ? shot.Number : updatedShot.Number);
+                
+        var options = new UpdateOptions {
+            ArrayFilters = new List<ArrayFilterDefinition> {
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId))),
+                new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("h._id", new ObjectId(shotId)))
+            }
+        };
+        
+        await _ProjectsCollection.UpdateOneAsync(filter, update, options);
+    }
     
 }
