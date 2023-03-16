@@ -7,6 +7,7 @@ using CPMApi.Models;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using Microsoft.Extensions.Options;
+using BC = BCrypt.Net.BCrypt;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -64,7 +65,7 @@ public class LoginController : ControllerBase
 
         foreach (User user in users)
         {
-            if (user.Username.Equals(login.Username) && user.Password.Equals(login.Password))
+            if (user.Username.Equals(login.Username) && BC.Verify(login.Password, user.Hash))
             {
                 return true;
             }

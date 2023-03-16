@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
+using BC = BCrypt.Net.BCrypt;
 
 namespace CPMApi.Models;
 
@@ -16,18 +17,84 @@ public class User
     public string Username { get; set; } = null!;
 
     [BsonRequired]
-    [BsonElement("Password")]
-    [JsonPropertyName("Password")]
-    public string Password { get; set; } = null!;
+    [JsonIgnore]
+    [BsonElement("Hash")]
+    public string Hash { get; set; } = null!;
 
-    public User cloneUser()
+    public void HashPassword(string password)
     {
-        User newUser = new User();
+        Hash = BC.HashPassword(password);
+    }
 
-        newUser.Id = this.Id;
-        newUser.Username = this.Username;
-        newUser.Password = this.Password;
+    public UserOutDTO ToOutDTO()
+    {
+        return new UserOutDTO
+        {
+            Id = this.Id,
+            Username = this.Username
+        };
+    }
+}
 
-        return newUser;
+public class UserOutDTO
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
+
+    [BsonRequired]
+    [BsonElement("Username")]
+    [JsonPropertyName("Username")]
+    public string? Username { get; set; }
+}
+
+public class UserInDTO
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
+
+    [BsonIgnore]
+    [JsonRequired]
+    [JsonPropertyName("Username")]
+    public string? Username { get; set; }
+
+    [BsonIgnore]
+    [JsonRequired]
+    [JsonPropertyName("Password")]
+    public string? Password { get; set; }
+
+    public User? ToUser()
+    {
+        if (this.Username == null || this.Password == null)
+            return null;
+        return new User
+        {
+            Id = this.Id,
+            Username = this.Username,
+            Hash = BC.HashPassword(this.Password)
+        };
+    }
+}
+
+public class UserUpdateDTO
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("Username")]
+    public string? Username { get; set; }
+
+    [BsonIgnore]
+    [JsonPropertyName("Password")]
+    public string? Password { get; set; }
+
+    public string? GetHash()
+    {
+        if (this.Password == null)
+            return null;
+        return BC.HashPassword(this.Password);
     }
 }
