@@ -15,11 +15,11 @@ public class UsersController : ControllerBase
         _usersService = usersService;
 
     [HttpGet, Authorize]
-    public async Task<List<User>> Get() =>
-        await _usersService.GetAsync();
+    public async Task<List<UserOutDTO>> Get() =>
+        (await _usersService.GetAsync()).Select(u => u.ToOutDTO()).ToList();
 
     [HttpGet("{id:length(24)}"), Authorize]
-    public async Task<ActionResult<User>> Get(string id)
+    public async Task<ActionResult<UserOutDTO>> Get(string id)
     {
         var user = await _usersService.GetAsync(id);
 
@@ -28,19 +28,22 @@ public class UsersController : ControllerBase
             return NotFound();
         }
 
-        return user;
+        return user.ToOutDTO();
     }
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> Post(User newUser)
+    public async Task<IActionResult> Post(UserInDTO newUser)
     {
-        await _usersService.CreateAsync(newUser);
+        var user = newUser.ToUser();
+        if (user == null)
+            return BadRequest();
+        await _usersService.CreateAsync(user);
 
-        return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
+        return CreatedAtAction(nameof(Get), new { id = user.Id }, user.ToOutDTO());
     }
 
     [HttpPut("{id:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string id, User updatedUser)
+    public async Task<IActionResult> Update(string id, UserUpdateDTO updatedUser)
     {
         var user = await _usersService.GetAsync(id);
 
@@ -48,16 +51,10 @@ public class UsersController : ControllerBase
         {
             return NotFound();
         }
+        
+        updatedUser.Id = user.Id;
 
-        User newUser = user.cloneUser();
-
-        if (updatedUser.Username != null)
-            newUser.Username = updatedUser.Username;
-
-        if (updatedUser.Password != null)
-            newUser.Password = updatedUser.Password;
-
-        await _usersService.UpdateAsync(id, newUser);
+        await _usersService.UpdateAsync(id, updatedUser);
 
         return NoContent();
     }
