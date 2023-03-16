@@ -21,19 +21,23 @@ public class User
     [BsonElement("Hash")]
     public string Hash { get; set; } = null!;
 
-    public void HashPassword(string password) {
+    public void HashPassword(string password)
+    {
         Hash = BC.HashPassword(password);
     }
 
-    public UserOutDTO ToOutDTO() {
-        return new UserOutDTO {
+    public UserOutDTO ToOutDTO()
+    {
+        return new UserOutDTO
+        {
             Id = this.Id,
             Username = this.Username
         };
     }
 }
 
-public class UserOutDTO {
+public class UserOutDTO
+{
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
@@ -44,7 +48,8 @@ public class UserOutDTO {
     public string? Username { get; set; }
 }
 
-public class UserInDTO {
+public class UserInDTO
+{
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
@@ -59,10 +64,12 @@ public class UserInDTO {
     [JsonPropertyName("Password")]
     public string? Password { get; set; }
 
-    public User? ToUser() {
+    public User? ToUser()
+    {
         if (this.Username == null || this.Password == null)
             return null;
-        return new User {
+        return new User
+        {
             Id = this.Id,
             Username = this.Username,
             Hash = BC.HashPassword(this.Password)
@@ -70,8 +77,9 @@ public class UserInDTO {
     }
 }
 
-public class UserUpdateDTO {
-[BsonId]
+public class UserUpdateDTO
+{
+    [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
@@ -83,7 +91,8 @@ public class UserUpdateDTO {
     [JsonPropertyName("Password")]
     public string? Password { get; set; }
 
-    public string? GetHash() {
+    public string? GetHash()
+    {
         if (this.Password == null)
             return null;
         return BC.HashPassword(this.Password);

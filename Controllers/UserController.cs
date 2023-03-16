@@ -51,7 +51,7 @@ public class UsersController : ControllerBase
         {
             return NotFound();
         }
-        
+
         updatedUser.Id = user.Id;
 
         await _usersService.UpdateAsync(id, updatedUser);
