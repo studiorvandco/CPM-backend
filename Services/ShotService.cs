@@ -82,7 +82,7 @@ public class ShotsService
         var update = Builders<Project>.Update.Push(
             p => p.Episodes.AllMatchingElements("e")
                   .Sequences.AllMatchingElements("s").Shots, 
-            shot.WithDefaults()
+            shot
         );
 
         var options = new UpdateOptions {
@@ -124,7 +124,7 @@ public class ShotsService
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update, options);
     }
 
-    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, string shotId, Shot updatedShot)
+    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, string shotId, ShotUpdateDTO updatedShot)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),

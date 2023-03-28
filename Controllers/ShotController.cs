@@ -40,7 +40,7 @@ public class ShotsController : ControllerBase
     }
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, string idShot, Shot updatedShot)
+    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, string idShot, ShotUpdateDTO updatedShot)
     {
         var Shot = await _ShotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
