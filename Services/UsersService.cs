@@ -28,8 +28,19 @@ public class UsersService
     public async Task CreateAsync(User newUser) =>
         await _usersCollection.InsertOneAsync(newUser);
 
-    public async Task UpdateAsync(string id, User updatedUser) =>
-        await _usersCollection.ReplaceOneAsync(x => x.Id == id, updatedUser);
+    public async Task UpdateAsync(string id, UserUpdateDTO updatedUser)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+        var user = await _usersCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (user == null) return;
+
+        var update = Builders<User>.Update
+            .Set(u => u.Username, updatedUser.Username ?? user.Username)
+            .Set(u => u.Hash, updatedUser.GetHash() ?? user.Hash);
+
+        await _usersCollection.UpdateOneAsync(filter, update);
+    }
 
     public async Task RemoveAsync(string id) =>
         await _usersCollection.DeleteOneAsync(x => x.Id == id);
