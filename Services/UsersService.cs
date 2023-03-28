@@ -35,9 +35,12 @@ public class UsersService
 
         if (user == null) return;
 
+        if (updatedUser.Password != null)
+            user.Password = updatedUser.Password;
+
         var update = Builders<User>.Update
             .Set(u => u.Username, updatedUser.Username ?? user.Username)
-            .Set(u => u.Hash, updatedUser.GetHash() ?? user.Hash);
+            .Set(u => u.Hash, user.Hash);
 
         await _usersCollection.UpdateOneAsync(filter, update);
     }

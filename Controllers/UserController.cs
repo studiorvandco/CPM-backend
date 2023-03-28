@@ -15,11 +15,11 @@ public class UsersController : ControllerBase
         _usersService = usersService;
 
     [HttpGet, Authorize]
-    public async Task<List<UserOutDTO>> Get() =>
-        (await _usersService.GetAsync()).Select(u => u.ToOutDTO()).ToList();
+    public async Task<List<User>> Get() =>
+        await _usersService.GetAsync();
 
     [HttpGet("{id:length(24)}"), Authorize]
-    public async Task<ActionResult<UserOutDTO>> Get(string id)
+    public async Task<ActionResult<User>> Get(string id)
     {
         var user = await _usersService.GetAsync(id);
 
@@ -28,18 +28,15 @@ public class UsersController : ControllerBase
             return NotFound();
         }
 
-        return user.ToOutDTO();
+        return user;
     }
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> Post(UserInDTO newUser)
+    public async Task<IActionResult> Post(User newUser)
     {
-        var user = newUser.ToUser();
-        if (user == null)
-            return BadRequest();
-        await _usersService.CreateAsync(user);
+        await _usersService.CreateAsync(newUser);
 
-        return CreatedAtAction(nameof(Get), new { id = user.Id }, user.ToOutDTO());
+        return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
     }
 
     [HttpPut("{id:length(24)}"), Authorize]
@@ -51,8 +48,6 @@ public class UsersController : ControllerBase
         {
             return NotFound();
         }
-
-        updatedUser.Id = user.Id;
 
         await _usersService.UpdateAsync(id, updatedUser);
 
