@@ -12,42 +12,42 @@ public class Sequence
 
     [BsonRequired]
     [BsonElement("Number")]
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; } = 0;
 
     [BsonRequired]
     [JsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     [BsonDefaultValue("")]
     public string Description { get; set; } = "";
 
     [BsonRequired]
     [BsonElement("BeginDate")]
-    [JsonPropertyName("BeginDate")]
+    [JsonPropertyName("begin_date")]
     public DateTimeOffset BeginDate { get; set; } = DateTimeOffset.MinValue;
 
     [BsonRequired]
     [BsonElement("EndDate")]
-    [JsonPropertyName("EndDate")]
+    [JsonPropertyName("end_date")]
     public DateTimeOffset EndDate { get; set; } = DateTimeOffset.MaxValue;
 
     [BsonElement("ShotsTotal")]
-    [JsonPropertyName("ShotsTotal")]
+    [JsonPropertyName("shots_total")]
     [BsonDefaultValue("0")]
     public int ShotsTotal { get; internal set; } = 0;
 
     [BsonElement("ShotsCompleted")]
-    [JsonPropertyName("ShotsCompleted")]
+    [JsonPropertyName("shots_completed")]
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
     [BsonElement("Shots")]
-    [JsonPropertyName("Shots")]
+    [JsonPropertyName("shots")]
     [BsonDefaultValue("[]")]
     public List<Shot> Shots { get; private set; } = new List<Shot>();
 
@@ -55,19 +55,19 @@ public class Sequence
 
 public class SequenceUpdateDTO
 {
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; } = 0;
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonPropertyName("BeginDate")]
+    [JsonPropertyName("begin_date")]
     public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("EndDate")]
+    [JsonPropertyName("end_date")]
     public DateTimeOffset? EndDate { get; set; }
 
 }

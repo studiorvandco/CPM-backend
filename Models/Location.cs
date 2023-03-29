@@ -12,11 +12,11 @@ public class Location
 
     [BsonRequired]
     [BsonElement("Name")]
-    [JsonPropertyName("Name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; } = null!;
 
     [BsonElement("Position")]
-    [JsonPropertyName("Position")]
+    [JsonPropertyName("position")]
     [BsonDefaultValue("")]
     public string Position { get; set; } = "";
 

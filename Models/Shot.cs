@@ -12,27 +12,27 @@ public class Shot
 
     [BsonRequired]
     [BsonElement("Number")]
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; }
 
     [BsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     [JsonRequired]
     public string Title { get; set; } = null!;
 
     [BsonElement("Value")]
-    [JsonPropertyName("Value")]
+    [JsonPropertyName("value")]
     [BsonDefaultValue("")]
     public string Value { get; set; } = "";
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     [BsonDefaultValue("")]
     public string Description { get; set; } = "";
 
     [BsonElement("Completed")]
-    [JsonPropertyName("Completed")]
+    [JsonPropertyName("completed")]
     [BsonDefaultValue("false")]
     public Boolean Completed { get; set; } = false;
 
@@ -40,19 +40,19 @@ public class Shot
 
 public class ShotUpdateDTO
 {
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; }
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("Value")]
+    [JsonPropertyName("value")]
     public string? Value { get; set; }
 
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonPropertyName("Completed")]
+    [JsonPropertyName("completed")]
     public Boolean? Completed { get; set; }
 
 }

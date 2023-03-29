@@ -13,7 +13,7 @@ public class User
 
     [BsonRequired]
     [BsonElement("Username")]
-    [JsonPropertyName("Username")]
+    [JsonPropertyName("username")]
     public string Username { get; set; } = null!;
 
     [BsonRequired]
@@ -32,10 +32,10 @@ public class User
 public class UserUpdateDTO
 {
     [BsonIgnore]
-    [JsonPropertyName("Username")]
+    [JsonPropertyName("username")]
     public string? Username { get; set; }
 
     [BsonIgnore]
-    [JsonPropertyName("Password")]
+    [JsonPropertyName("password")]
     public string? Password { get; set; }
 }

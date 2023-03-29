@@ -12,16 +12,16 @@ public class Member
 
     [BsonRequired]
     [BsonElement("FirstName")]
-    [JsonPropertyName("FirstName")]
+    [JsonPropertyName("first_name")]
     public string FirstName { get; set; } = null!;
 
     [BsonElement("LastName")]
-    [JsonPropertyName("LastName")]
+    [JsonPropertyName("last_name")]
     [BsonDefaultValue("")]
     public string LastName { get; set; } = "";
 
     [BsonElement("Phone")]
-    [JsonPropertyName("Phone")]
+    [JsonPropertyName("phone")]
     [BsonDefaultValue("")]
     public string Phone { get; set; } = "";
 

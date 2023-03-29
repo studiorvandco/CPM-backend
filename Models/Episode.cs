@@ -12,42 +12,42 @@ public class Episode
 
     [BsonRequired]
     [BsonElement("Number")]
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; } = 0;
 
     [BsonRequired]
     [JsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     [BsonDefaultValue("")]
     public string Description { get; set; } = "";
 
     [BsonElement("Director")]
-    [JsonPropertyName("Director")]
+    [JsonPropertyName("director")]
     [BsonDefaultValue("")]
     public string Director { get; set; } = "";
 
     [BsonElement("Writer")]
-    [JsonPropertyName("Writer")]
+    [JsonPropertyName("writer")]
     [BsonDefaultValue("")]
     public string Writer { get; set; } = "";
 
     [BsonElement("ShotsTotal")]
-    [JsonPropertyName("ShotsTotal")]
+    [JsonPropertyName("shots_total")]
     [BsonDefaultValue("0")]
     public int ShotsTotal { get; internal set; } = 0;
 
     [BsonElement("ShotsCompleted")]
-    [JsonPropertyName("ShotsCompleted")]
+    [JsonPropertyName("shots_completed")]
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
     [BsonElement("Sequences")]
-    [JsonPropertyName("Sequences")]
+    [JsonPropertyName("sequences")]
     [BsonDefaultValue("[]")]
     public List<Sequence> Sequences { get; private set; } = new List<Sequence>();
 
@@ -55,19 +55,19 @@ public class Episode
 
 public class EpisodeUpdateDTO
 {
-    [JsonPropertyName("Number")]
+    [JsonPropertyName("number")]
     public int Number { get; set; } = 0;
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("Description")]
+    [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonPropertyName("Director")]
+    [JsonPropertyName("director")]
     public string? Director { get; set; }
 
-    [JsonPropertyName("Writer")]
+    [JsonPropertyName("writer")]
     public string? Writer { get; set; }
 
 }
