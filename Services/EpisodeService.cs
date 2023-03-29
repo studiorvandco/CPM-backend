@@ -51,7 +51,7 @@ public class EpisodesService
             }
         }
         
-        var update = Builders<Project>.Update.Push(p => p.Episodes, episode.WithDefaults());
+        var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
@@ -69,7 +69,7 @@ public class EpisodesService
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task UpdateAsync(string projectId, string episodeId, Episode updatedEpisode)
+    public async Task UpdateAsync(string projectId, string episodeId, EpisodeUpdateDTO updatedEpisode)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),

@@ -8,7 +8,7 @@ public class Episode
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string Id { get; private set; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
@@ -16,47 +16,58 @@ public class Episode
     public int Number { get; set; } = 0;
 
     [BsonRequired]
+    [JsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
     [JsonPropertyName("Description")]
     [BsonDefaultValue("")]
-    public string? Description { get; set; }
+    public string Description { get; set; } = "";
 
     [BsonElement("Director")]
     [JsonPropertyName("Director")]
     [BsonDefaultValue("")]
-    public string? Director { get; set; }
+    public string Director { get; set; } = "";
 
     [BsonElement("Writer")]
     [JsonPropertyName("Writer")]
     [BsonDefaultValue("")]
-    public string? Writer { get; set; }
+    public string Writer { get; set; } = "";
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("ShotsTotal")]
     [BsonDefaultValue("0")]
-    public int ShotsTotal { get; set; } = 0;
+    public int ShotsTotal { get; internal set; } = 0;
 
     [BsonElement("ShotsCompleted")]
     [JsonPropertyName("ShotsCompleted")]
     [BsonDefaultValue("0")]
-    public int ShotsCompleted { get; set; } = 0;
+    public int ShotsCompleted { get; internal set; } = 0;
 
     [BsonElement("Sequences")]
     [JsonPropertyName("Sequences")]
     [BsonDefaultValue("[]")]
-    public List<Sequence> Sequences { get; set; } = new List<Sequence>();
+    public List<Sequence> Sequences { get; private set; } = new List<Sequence>();
 
-    public Episode WithDefaults() {
-        this.Id = ObjectId.GenerateNewId().ToString();
-        this.Title ??= "";
-        this.Description ??= "";
-        this.Director ??= "";
-        this.Writer ??= "";
-        return this;
-    }
+}
+
+public class EpisodeUpdateDTO
+{
+    [JsonPropertyName("Number")]
+    public int Number { get; set; } = 0;
+
+    [JsonPropertyName("Title")]
+    public string? Title { get; set; }
+
+    [JsonPropertyName("Description")]
+    public string? Description { get; set; }
+
+    [JsonPropertyName("Director")]
+    public string? Director { get; set; }
+
+    [JsonPropertyName("Writer")]
+    public string? Writer { get; set; }
 
 }
