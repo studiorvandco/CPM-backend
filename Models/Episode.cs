@@ -49,6 +49,7 @@ public class Episode
     [BsonElement("Sequences")]
     [JsonPropertyName("sequences")]
     [BsonDefaultValue("[]")]
+    [JsonIgnore]
     public List<Sequence> Sequences { get; private set; } = new List<Sequence>();
 
 }

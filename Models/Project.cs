@@ -58,6 +58,7 @@ public class Project
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]
+    [JsonIgnore]
     public List<Episode> Episodes { get; private set; } = new List<Episode>();
 
 }

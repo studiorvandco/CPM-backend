@@ -49,6 +49,7 @@ public class Sequence
     [BsonElement("Shots")]
     [JsonPropertyName("shots")]
     [BsonDefaultValue("[]")]
+    [JsonIgnore]
     public List<Shot> Shots { get; private set; } = new List<Shot>();
 
 }
