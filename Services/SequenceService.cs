@@ -74,18 +74,23 @@ public class SequencesService
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task RemoveAsync(string projectId, string episodeId, string sequenceId)
+    public async Task RemoveAsync(string projectId, string episodeId, Sequence sequence)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
-                e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
+                e.Id == episodeId && e.Sequences.Any(s => s.Id == sequence.Id)
             )
         );
 
-        var update = Builders<Project>.Update.PullFilter(e =>
-            e.Episodes.FirstMatchingElement().Sequences, s => s.Id == sequenceId
-        );
+        var update = Builders<Project>.Update
+            .PullFilter(p =>
+                p.Episodes.FirstMatchingElement().Sequences, s => s.Id == sequence.Id)
+            .Inc(p => p.Episodes.FirstMatchingElement().ShotsTotal, -sequence.ShotsTotal)
+            .Inc(p => p.Episodes.FirstMatchingElement().ShotsCompleted, -sequence.ShotsCompleted)
+            .Inc(p => p.ShotsTotal, -sequence.ShotsTotal)
+            .Inc(p => p.ShotsCompleted, -sequence.ShotsCompleted);
+
 
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }

@@ -79,11 +79,25 @@ public class ShotsService
             }
         }
 
-        var update = Builders<Project>.Update.Push(
-            p => p.Episodes.AllMatchingElements("e")
-                  .Sequences.AllMatchingElements("s").Shots, 
-            shot
-        );
+        var update = Builders<Project>.Update
+            .Push(
+                p => p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").Shots, 
+                shot)
+            .Inc(p =>
+                p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").ShotsTotal,
+                +1)
+            .Inc(p => p.Episodes.AllMatchingElements("e").ShotsTotal, +1)
+            .Inc(p => p.ShotsTotal, +1);
+        if (shot.Completed) {
+            update = update.Inc(p =>
+                p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").ShotsCompleted,
+                +1)
+            .Inc(p => p.Episodes.AllMatchingElements("e").ShotsCompleted, +1)
+            .Inc(p => p.ShotsCompleted, +1);
+        }
 
         var options = new UpdateOptions {
             ArrayFilters = new List<ArrayFilterDefinition> {
@@ -95,24 +109,38 @@ public class ShotsService
         await _ProjectsCollection.UpdateOneAsync(filter, update, options);
     }
 
-    public async Task RemoveAsync(string projectId, string episodeId, string sequenceId, string shotId)
+    public async Task RemoveAsync(string projectId, string episodeId, string sequenceId, Shot shot)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
                 e.Id == episodeId && e.Sequences.Any(s =>
                     s.Id == sequenceId && s.Shots.Any(h => 
-                        h.Id == shotId
+                        h.Id == shot.Id
                     )
                 )
             )
         );
 
-        var update = Builders<Project>.Update.PullFilter(s =>
-            s.Episodes.AllMatchingElements("e")
-                .Sequences.AllMatchingElements("s").Shots,
-            h => h.Id == shotId
-        );
+        var update = Builders<Project>.Update
+            .PullFilter(p =>
+                p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").Shots,
+                h => h.Id == shot.Id)
+            .Inc(p =>
+                p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").ShotsTotal,
+                -1)
+            .Inc(p => p.Episodes.AllMatchingElements("e").ShotsTotal, -1)
+            .Inc(p => p.ShotsTotal, -1);
+        if (shot.Completed) {
+            update = update.Inc(p =>
+                p.Episodes.AllMatchingElements("e")
+                    .Sequences.AllMatchingElements("s").ShotsCompleted,
+                -1)
+            .Inc(p => p.Episodes.AllMatchingElements("e").ShotsCompleted, -1)
+            .Inc(p => p.ShotsCompleted, -1);
+        }
 
         var options = new UpdateOptions {
             ArrayFilters = new List<ArrayFilterDefinition> {
@@ -164,6 +192,23 @@ public class ShotsService
                       .Sequences.AllMatchingElements("s")
                       .Shots.AllMatchingElements("h").Number, 
                 updatedShot.Number == 0 ? shot.Number : updatedShot.Number);
+        
+        if (updatedShot.Completed != null) {
+            bool completed = (bool) updatedShot.Completed;
+            update = update.Set(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s")
+                      .Shots.AllMatchingElements("h").Completed, 
+                updatedShot.Completed ?? shot.Completed)
+            .Inc(
+                p => p.Episodes.AllMatchingElements("e")
+                      .Sequences.AllMatchingElements("s").ShotsCompleted, 
+                completed ? +1 : -1)
+            .Inc(
+                p => p.Episodes.AllMatchingElements("e").ShotsCompleted, 
+                completed ? +1 : -1)
+            .Inc(p => p.ShotsCompleted, completed ? +1 : -1);
+        }
                 
         var options = new UpdateOptions {
             ArrayFilters = new List<ArrayFilterDefinition> {
@@ -174,6 +219,9 @@ public class ShotsService
         };
         
         await _ProjectsCollection.UpdateOneAsync(filter, update, options);
+
+        Project project = await _ProjectsCollection.Find(filter).FirstAsync();
+        
     }
     
 }

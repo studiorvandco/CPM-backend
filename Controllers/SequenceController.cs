@@ -64,7 +64,7 @@ public class SequencesController : ControllerBase
             return NotFound();
         }
 
-        await _SequencesService.RemoveAsync(idProject, idEpisode, idSequence);
+        await _SequencesService.RemoveAsync(idProject, idEpisode, sequence);
 
         return NoContent();
     }

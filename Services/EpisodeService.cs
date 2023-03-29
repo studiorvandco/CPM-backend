@@ -57,14 +57,17 @@ public class EpisodesService
     }
 
 
-    public async Task RemoveAsync(string projectId, string episodeId)
+    public async Task RemoveAsync(string projectId, Episode episode)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
-            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
+            Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episode.Id)
         );
 
-        var update = Builders<Project>.Update.PullFilter(p => p.Episodes, e => e.Id == episodeId);
+        var update = Builders<Project>.Update
+            .PullFilter(p => p.Episodes, e => e.Id == episode.Id)
+            .Inc(p => p.ShotsTotal, -episode.ShotsTotal)
+            .Inc(p => p.ShotsCompleted, -episode.ShotsCompleted);
 
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }

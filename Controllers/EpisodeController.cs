@@ -64,7 +64,7 @@ public class EpisodesController : ControllerBase
             return NotFound();
         }
 
-        await _EpisodesService.RemoveAsync(idProject, idEpisode);
+        await _EpisodesService.RemoveAsync(idProject, episode);
 
         return NoContent();
     }

@@ -64,7 +64,7 @@ public class ShotsController : ControllerBase
             return NotFound();
         }
 
-        await _ShotsService.RemoveAsync(idProject, idEpisode, idSequence, idShot);
+        await _ShotsService.RemoveAsync(idProject, idEpisode, idSequence, Shot);
 
         return NoContent();
     }
