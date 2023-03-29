@@ -69,7 +69,7 @@ public class SequencesService
             }
         }
 
-        var update = Builders<Project>.Update.Push(e => e.Episodes.FirstMatchingElement().Sequences, sequence.WithDefaults());
+        var update = Builders<Project>.Update.Push(e => e.Episodes.FirstMatchingElement().Sequences, sequence);
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
@@ -90,7 +90,7 @@ public class SequencesService
         var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, Sequence updatedSequence)
+    public async Task UpdateAsync(string projectId, string episodeId, string sequenceId, SequenceUpdateDTO updatedSequence)
     {
         var filter = Builders<Project>.Filter.And(
             Builders<Project>.Filter.Eq(p => p.Id, projectId),

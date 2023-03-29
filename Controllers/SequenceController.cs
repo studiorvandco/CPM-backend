@@ -40,7 +40,7 @@ public class SequencesController : ControllerBase
     }
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, Sequence updatedSequence)
+    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, SequenceUpdateDTO updatedSequence)
     {
         var sequence = await _SequencesService.GetAsync(idProject, idEpisode, idSequence);
 
@@ -48,8 +48,6 @@ public class SequencesController : ControllerBase
         {
             return NotFound();
         } 
-
-        updatedSequence.Id = sequence.Id;
 
         await _SequencesService.UpdateAsync(idProject, idEpisode, idSequence, updatedSequence);
 
