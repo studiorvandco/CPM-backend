@@ -57,16 +57,14 @@ public class SequencesService
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
 
-        if (sequence.Number <= 0) {
-            var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
-                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
-            if (episode == null) return;
+        var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                        ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
+        if (episode == null) return;
 
-            if (episode.Sequences.Count == 0) {
-                sequence.Number = 1;
-            } else {
-                sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
-            }
+        if (episode.Sequences.Count == 0) {
+            sequence.Number = 1;
+        } else {
+            sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
         }
 
         var update = Builders<Project>.Update.Push(e => e.Episodes.FirstMatchingElement().Sequences, sequence);

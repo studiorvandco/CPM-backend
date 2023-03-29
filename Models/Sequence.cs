@@ -13,7 +13,7 @@ public class Sequence
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("number")]
-    public int Number { get; set; } = 0;
+    public int Number { get; internal set; } = 0;
 
     [BsonRequired]
     [JsonRequired]

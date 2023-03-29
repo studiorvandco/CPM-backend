@@ -13,7 +13,7 @@ public class Shot
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("number")]
-    public int Number { get; set; }
+    public int Number { get; internal set; }
 
     [BsonRequired]
     [BsonElement("Title")]

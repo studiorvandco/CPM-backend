@@ -66,17 +66,15 @@ public class ShotsService
             )
         );
 
-        if (shot.Number <= 0) {
-            var sequence = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
-                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
-                            ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
-            if (sequence == null) return;
+        var sequence = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
+                        ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
+                        ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
+        if (sequence == null) return;
 
-            if (sequence.Shots.Count == 0) {
-                shot.Number = 1;
-            } else {
-                shot.Number = sequence.Shots.Max(e => e.Number) + 1;
-            }
+        if (sequence.Shots.Count == 0) {
+            shot.Number = 1;
+        } else {
+            shot.Number = sequence.Shots.Max(e => e.Number) + 1;
         }
 
         var update = Builders<Project>.Update

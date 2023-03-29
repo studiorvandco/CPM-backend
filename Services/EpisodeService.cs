@@ -40,15 +40,14 @@ public class EpisodesService
     public async Task CreateAsync(string projectId, Episode episode)
     {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, projectId);
-        if (episode.Number <= 0) {
-            var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
-            if (project == null) return;
-            
-            if (project.Episodes.Count == 0) {
-                episode.Number = 1;
-            } else {
-                episode.Number = project.Episodes.Max(e => e.Number) + 1;
-            }
+
+        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+        if (project == null) return;
+        
+        if (project.Episodes.Count == 0) {
+            episode.Number = 1;
+        } else {
+            episode.Number = project.Episodes.Max(e => e.Number) + 1;
         }
         
         var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
