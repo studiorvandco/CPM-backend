@@ -40,23 +40,18 @@ public class Shot
 
 public class ShotUpdateDTO
 {
-    [BsonElement("Number")]
     [JsonPropertyName("Number")]
     public int Number { get; set; }
 
-    [BsonElement("Title")]
     [JsonPropertyName("Title")]
     public string? Title { get; set; }
 
-    [BsonElement("Value")]
     [JsonPropertyName("Value")]
     public string? Value { get; set; }
 
-    [BsonElement("Description")]
     [JsonPropertyName("Description")]
     public string? Description { get; set; }
 
-    [BsonElement("Completed")]
     [JsonPropertyName("Completed")]
     public Boolean? Completed { get; set; }
 
