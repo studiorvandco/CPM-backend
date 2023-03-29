@@ -26,9 +26,9 @@ public class ProjectsService
         await _ProjectsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
     public async Task CreateAsync(Project newProject) =>
-        await _ProjectsCollection.InsertOneAsync(newProject.WithDefaults());
+        await _ProjectsCollection.InsertOneAsync(newProject);
 
-    public async Task UpdateAsync(string id, Project updatedProject) {
+    public async Task UpdateAsync(string id, ProjectUpdateDTO updatedProject) {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, id);
         var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
 

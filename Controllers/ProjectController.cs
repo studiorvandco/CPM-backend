@@ -40,7 +40,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string id, Project updatedProject)
+    public async Task<IActionResult> Update(string id, ProjectUpdateDTO updatedProject)
     {
         var project = await _ProjectsService.GetAsync(id);
 
@@ -48,8 +48,6 @@ public class ProjectsController : ControllerBase
         {
             return NotFound();
         }
-
-        updatedProject.Id = project.Id;
 
         await _ProjectsService.UpdateAsync(id, updatedProject);
 
