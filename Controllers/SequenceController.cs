@@ -47,7 +47,7 @@ public class SequencesController : ControllerBase
         if (sequence is null)
         {
             return NotFound();
-        } 
+        }
 
         await _SequencesService.UpdateAsync(idProject, idEpisode, idSequence, updatedSequence);
 

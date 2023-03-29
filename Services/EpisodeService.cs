@@ -25,8 +25,9 @@ public class EpisodesService
                                 .Project(p => p.Episodes)
                                 .ToListAsync()
                                 .ContinueWith(t => t.Result.SelectMany(e => e).ToList());
-                                
-    public async Task<Episode?> GetAsync(string idProject, string idEpisode) {
+
+    public async Task<Episode?> GetAsync(string idProject, string idEpisode)
+    {
         var episodes = await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
                                                 .Project(p => p.Episodes)
                                                 .ToListAsync();
@@ -43,13 +44,16 @@ public class EpisodesService
 
         var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
         if (project == null) return;
-        
-        if (project.Episodes.Count == 0) {
+
+        if (project.Episodes.Count == 0)
+        {
             episode.Number = 1;
-        } else {
+        }
+        else
+        {
             episode.Number = project.Episodes.Max(e => e.Number) + 1;
         }
-        
+
         var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
 
         await _ProjectsCollection.UpdateOneAsync(filter, update);
@@ -77,7 +81,7 @@ public class EpisodesService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
-        
+
         var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
                             ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
         if (episode == null) return;
@@ -88,7 +92,7 @@ public class EpisodesService
             .Set(p => p.Episodes.FirstMatchingElement().Description, updatedEpisode.Description ?? episode.Description)
             .Set(p => p.Episodes.FirstMatchingElement().Writer, updatedEpisode.Writer ?? episode.Writer)
             .Set(p => p.Episodes.FirstMatchingElement().Director, updatedEpisode.Director ?? episode.Director);
-        
+
         await _ProjectsCollection.UpdateOneAsync(filter, update);
     }
 

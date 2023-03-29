@@ -22,8 +22,10 @@ public class User
     public string Hash { get; set; } = null!;
 
     [BsonIgnore]
-    public string Password {
-        set {
+    public string Password
+    {
+        set
+        {
             Hash = BC.HashPassword(value);
         }
     }

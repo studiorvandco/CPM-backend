@@ -71,16 +71,19 @@ public class ShotsService
                         ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
         if (sequence == null) return;
 
-        if (sequence.Shots.Count == 0) {
+        if (sequence.Shots.Count == 0)
+        {
             shot.Number = 1;
-        } else {
+        }
+        else
+        {
             shot.Number = sequence.Shots.Max(e => e.Number) + 1;
         }
 
         var update = Builders<Project>.Update
             .Push(
                 p => p.Episodes.AllMatchingElements("e")
-                    .Sequences.AllMatchingElements("s").Shots, 
+                    .Sequences.AllMatchingElements("s").Shots,
                 shot)
             .Inc(p =>
                 p.Episodes.AllMatchingElements("e")
@@ -88,7 +91,8 @@ public class ShotsService
                 +1)
             .Inc(p => p.Episodes.AllMatchingElements("e").ShotsTotal, +1)
             .Inc(p => p.ShotsTotal, +1);
-        if (shot.Completed) {
+        if (shot.Completed)
+        {
             update = update.Inc(p =>
                 p.Episodes.AllMatchingElements("e")
                     .Sequences.AllMatchingElements("s").ShotsCompleted,
@@ -97,7 +101,8 @@ public class ShotsService
             .Inc(p => p.ShotsCompleted, +1);
         }
 
-        var options = new UpdateOptions {
+        var options = new UpdateOptions
+        {
             ArrayFilters = new List<ArrayFilterDefinition> {
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
@@ -113,7 +118,7 @@ public class ShotsService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
                 e.Id == episodeId && e.Sequences.Any(s =>
-                    s.Id == sequenceId && s.Shots.Any(h => 
+                    s.Id == sequenceId && s.Shots.Any(h =>
                         h.Id == shot.Id
                     )
                 )
@@ -131,7 +136,8 @@ public class ShotsService
                 -1)
             .Inc(p => p.Episodes.AllMatchingElements("e").ShotsTotal, -1)
             .Inc(p => p.ShotsTotal, -1);
-        if (shot.Completed) {
+        if (shot.Completed)
+        {
             update = update.Inc(p =>
                 p.Episodes.AllMatchingElements("e")
                     .Sequences.AllMatchingElements("s").ShotsCompleted,
@@ -140,7 +146,8 @@ public class ShotsService
             .Inc(p => p.ShotsCompleted, -1);
         }
 
-        var options = new UpdateOptions {
+        var options = new UpdateOptions
+        {
             ArrayFilters = new List<ArrayFilterDefinition> {
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
@@ -156,7 +163,7 @@ public class ShotsService
             Builders<Project>.Filter.Eq(p => p.Id, projectId),
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e =>
                 e.Id == episodeId && e.Sequences.Any(s =>
-                    s.Id == sequenceId && s.Shots.Any(h => 
+                    s.Id == sequenceId && s.Shots.Any(h =>
                         h.Id == shotId
                     )
                 )
@@ -173,53 +180,55 @@ public class ShotsService
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
                       .Sequences.AllMatchingElements("s")
-                      .Shots.AllMatchingElements("h").Title, 
+                      .Shots.AllMatchingElements("h").Title,
                 updatedShot.Title ?? shot.Title)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
                       .Sequences.AllMatchingElements("s")
-                      .Shots.AllMatchingElements("h").Description, 
+                      .Shots.AllMatchingElements("h").Description,
                 updatedShot.Description ?? shot.Description)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
                       .Sequences.AllMatchingElements("s")
-                      .Shots.AllMatchingElements("h").Value, 
+                      .Shots.AllMatchingElements("h").Value,
                 updatedShot.Value ?? shot.Value)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
                       .Sequences.AllMatchingElements("s")
-                      .Shots.AllMatchingElements("h").Number, 
+                      .Shots.AllMatchingElements("h").Number,
                 updatedShot.Number == 0 ? shot.Number : updatedShot.Number);
-        
-        if (updatedShot.Completed != null) {
-            bool completed = (bool) updatedShot.Completed;
+
+        if (updatedShot.Completed != null)
+        {
+            bool completed = (bool)updatedShot.Completed;
             update = update.Set(
                 p => p.Episodes.AllMatchingElements("e")
                       .Sequences.AllMatchingElements("s")
-                      .Shots.AllMatchingElements("h").Completed, 
+                      .Shots.AllMatchingElements("h").Completed,
                 updatedShot.Completed ?? shot.Completed)
             .Inc(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").ShotsCompleted, 
+                      .Sequences.AllMatchingElements("s").ShotsCompleted,
                 completed ? +1 : -1)
             .Inc(
-                p => p.Episodes.AllMatchingElements("e").ShotsCompleted, 
+                p => p.Episodes.AllMatchingElements("e").ShotsCompleted,
                 completed ? +1 : -1)
             .Inc(p => p.ShotsCompleted, completed ? +1 : -1);
         }
-                
-        var options = new UpdateOptions {
+
+        var options = new UpdateOptions
+        {
             ArrayFilters = new List<ArrayFilterDefinition> {
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId))),
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("h._id", new ObjectId(shotId)))
             }
         };
-        
+
         await _ProjectsCollection.UpdateOneAsync(filter, update, options);
 
         Project project = await _ProjectsCollection.Find(filter).FirstAsync();
-        
+
     }
-    
+
 }

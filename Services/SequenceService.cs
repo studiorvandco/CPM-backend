@@ -61,9 +61,12 @@ public class SequencesService
                         ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
         if (episode == null) return;
 
-        if (episode.Sequences.Count == 0) {
+        if (episode.Sequences.Count == 0)
+        {
             sequence.Number = 1;
-        } else {
+        }
+        else
+        {
             sequence.Number = episode.Sequences.Max(e => e.Number) + 1;
         }
 
@@ -101,7 +104,7 @@ public class SequencesService
                 e.Id == episodeId && e.Sequences.Any(s => s.Id == sequenceId)
             )
         );
-        
+
         var sequence = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
                             ?.Episodes.FirstOrDefault(e => e.Id == episodeId)
                             ?.Sequences.FirstOrDefault(s => s.Id == sequenceId);
@@ -110,32 +113,33 @@ public class SequencesService
         var update = Builders<Project>.Update
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").Title, 
+                      .Sequences.AllMatchingElements("s").Title,
                 updatedSequence.Title ?? sequence.Title)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").Description, 
+                      .Sequences.AllMatchingElements("s").Description,
                 updatedSequence.Description ?? sequence.Description)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").BeginDate, 
+                      .Sequences.AllMatchingElements("s").BeginDate,
                 updatedSequence.BeginDate ?? sequence.BeginDate)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").EndDate, 
+                      .Sequences.AllMatchingElements("s").EndDate,
                 updatedSequence.EndDate ?? sequence.EndDate)
             .Set(
                 p => p.Episodes.AllMatchingElements("e")
-                      .Sequences.AllMatchingElements("s").Number, 
+                      .Sequences.AllMatchingElements("s").Number,
                 updatedSequence.Number == 0 ? sequence.Number : updatedSequence.Number);
-                
-        var options = new UpdateOptions {
+
+        var options = new UpdateOptions
+        {
             ArrayFilters = new List<ArrayFilterDefinition> {
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("e._id", new ObjectId(episodeId))),
                 new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("s._id", new ObjectId(sequenceId)))
             }
         };
-        
+
         await _ProjectsCollection.UpdateOneAsync(filter, update, options);
     }
 
