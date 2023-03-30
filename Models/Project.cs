@@ -45,22 +45,15 @@ public class Project
 
     [BsonRequired]
     [JsonRequired]
-    [BsonElement("isFilm")]
-    [JsonPropertyName("is_film")]
-    public Boolean isFilm { get; set; }
-
-    [BsonRequired]
-    [JsonRequired]
-    [BsonElement("isSeries")]
-    [JsonPropertyName("is_series")]
-    public Boolean isSeries { get; set; }
+    [BsonElement("isMovie")]
+    [JsonPropertyName("is_movie")]
+    public Boolean isMovie { get; set; }
 
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]
     [JsonIgnore]
     public List<Episode> Episodes { get; private set; } = new List<Episode>();
-
 }
 
 public class ProjectUpdateDTO
@@ -76,5 +69,4 @@ public class ProjectUpdateDTO
 
     [JsonPropertyName("end_date")]
     public DateTimeOffset? EndDate { get; set; }
-
 }

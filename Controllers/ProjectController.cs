@@ -39,7 +39,7 @@ public class ProjectsController : ControllerBase
     {
         await _ProjectsService.CreateAsync(newProject);
 
-        if (newProject.isFilm)
+        if (newProject.isMovie)
         {
             Episode placeholderEpisode = new Episode();
             await _EpisodesService.CreateAsync(newProject.Id!, placeholderEpisode);
