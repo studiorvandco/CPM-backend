@@ -41,8 +41,7 @@ public class ProjectsController : ControllerBase
 
         if (newProject.isMovie)
         {
-            Episode placeholderEpisode = new Episode();
-            await _EpisodesService.CreateAsync(newProject.Id!, placeholderEpisode);
+            await _EpisodesService.CreateAsync(newProject.Id!, new Episode());
         }
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
