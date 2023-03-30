@@ -10,13 +10,16 @@ namespace CPMApi.Controllers;
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectsService _ProjectsService;
+    private readonly EpisodesService _EpisodesService;
 
-    public ProjectsController(ProjectsService ProjectsService) =>
+    public ProjectsController(ProjectsService ProjectsService, EpisodesService EpisodesService)
+    {
         _ProjectsService = ProjectsService;
+        _EpisodesService = EpisodesService;
+    }
 
     [HttpGet, Authorize]
-    public async Task<List<Project>> Get() =>
-        await _ProjectsService.GetAsync();
+    public async Task<List<Project>> Get() => await _ProjectsService.GetAsync();
 
     [HttpGet("{id:length(24)}"), Authorize]
     public async Task<ActionResult<Project>> Get(string id)
@@ -35,6 +38,12 @@ public class ProjectsController : ControllerBase
     public async Task<IActionResult> Post(Project newProject)
     {
         await _ProjectsService.CreateAsync(newProject);
+
+        if (newProject.isFilm)
+        {
+            Episode placeholderEpisode = new Episode();
+            await _EpisodesService.CreateAsync(newProject.Id!, placeholderEpisode);
+        }
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
