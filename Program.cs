@@ -1,6 +1,6 @@
 using System.Text;
-using CPMApi.Models;
-using CPMApi.Services;
+using CPM_backend.Models;
+using CPM_backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -33,7 +33,7 @@ builder.Services
     {
         options.SaveToken = true;
         options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
@@ -42,7 +42,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
                     builder.Configuration.GetSection("Login")["Key"]
-                        ?? throw new Exception("Key is missing from the login configuration")
+                    ?? throw new Exception("Key is missing from the login configuration")
                 )
             )
         };
@@ -73,7 +73,7 @@ builder.Services.AddSwaggerGen(option =>
                         Id = "Bearer"
                     }
                 },
-                new string[] { }
+                Array.Empty<string>()
             }
         }
     );
@@ -86,15 +86,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseCors(builder =>
-    builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .WithHeaders(
-                HeaderNames.ContentType,
-                HeaderNames.Authorization
-            )
+app.UseCors(corsPolicyBuilder =>
+    corsPolicyBuilder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .WithHeaders(
+            HeaderNames.ContentType,
+            HeaderNames.Authorization
+        )
 );
 app.MapControllers();
 app.Run();

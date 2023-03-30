@@ -1,37 +1,43 @@
-using CPMApi.Models;
+using CPM_backend.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace CPMApi.Services;
+namespace CPM_backend.Services;
 
 public class ProjectsService
 {
-    private readonly IMongoCollection<Project> _ProjectsCollection;
+    private readonly IMongoCollection<Project> _projectsCollection;
 
-    public ProjectsService(IOptions<DatabaseConfiguration> DatabaseConfiguration)
+    public ProjectsService(IOptions<DatabaseConfiguration> databaseConfiguration)
     {
-        var mongoClient = new MongoClient(DatabaseConfiguration.Value.Connection);
+        var mongoClient = new MongoClient(databaseConfiguration.Value.Connection);
 
-        var mongoDatabase = mongoClient.GetDatabase(DatabaseConfiguration.Value.Name);
+        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.Name);
 
-        _ProjectsCollection = mongoDatabase.GetCollection<Project>(
-            DatabaseConfiguration.Value.ProjectsCollection
+        _projectsCollection = mongoDatabase.GetCollection<Project>(
+            databaseConfiguration.Value.ProjectsCollection
         );
     }
 
-    public async Task<List<Project>> GetAsync() =>
-        await _ProjectsCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Project>> GetAsync()
+    {
+        return await _projectsCollection.Find(_ => true).ToListAsync();
+    }
 
-    public async Task<Project?> GetAsync(string id) =>
-        await _ProjectsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<Project?> GetAsync(string id)
+    {
+        return await _projectsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
-    public async Task CreateAsync(Project newProject) =>
-        await _ProjectsCollection.InsertOneAsync(newProject);
+    public async Task CreateAsync(Project newProject)
+    {
+        await _projectsCollection.InsertOneAsync(newProject);
+    }
 
     public async Task UpdateAsync(string id, ProjectUpdateDTO updatedProject)
     {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, id);
-        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+        var project = await _projectsCollection.Find(filter).FirstOrDefaultAsync();
 
         if (project == null) return;
 
@@ -41,9 +47,11 @@ public class ProjectsService
             .Set(p => p.BeginDate, updatedProject.BeginDate ?? project.BeginDate)
             .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate);
 
-        await _ProjectsCollection.UpdateOneAsync(filter, update);
+        await _projectsCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task RemoveAsync(string id) =>
-        await _ProjectsCollection.DeleteOneAsync(x => x.Id == id);
+    public async Task RemoveAsync(string id)
+    {
+        await _projectsCollection.DeleteOneAsync(x => x.Id == id);
+    }
 }

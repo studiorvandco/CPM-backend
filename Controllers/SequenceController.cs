@@ -1,70 +1,71 @@
-using CPMApi.Models;
-using CPMApi.Services;
+using CPM_backend.Models;
+using CPM_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPMApi.Controllers;
+namespace CPM_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class SequencesController : ControllerBase
 {
-    private readonly SequencesService _SequencesService;
+    private readonly SequencesService _sequencesService;
 
-    public SequencesController(SequencesService SequencesService) =>
-        _SequencesService = SequencesService;
-
-    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]
-    public async Task<List<Sequence>> Get(string idProject, string idEpisode) =>
-        await _SequencesService.GetAsync(idProject, idEpisode);
-
-    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
-    public async Task<ActionResult<Sequence>> Get(string idProject, string idEpisode, string idSequence)
+    public SequencesController(SequencesService sequencesService)
     {
-        var Sequence = await _SequencesService.GetAsync(idProject, idEpisode, idSequence);
-
-        if (Sequence is null)
-        {
-            return NotFound();
-        }
-
-        return Sequence;
+        _sequencesService = sequencesService;
     }
 
-    [HttpPost("{idProject:length(24)}/{idEpisode:length(24)}"), Authorize]
+    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}")]
+    [Authorize]
+    public async Task<List<Sequence>> Get(string idProject, string idEpisode)
+    {
+        return await _sequencesService.GetAsync(idProject, idEpisode);
+    }
+
+    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
+    [Authorize]
+    public async Task<ActionResult<Sequence>> Get(string idProject, string idEpisode, string idSequence)
+    {
+        var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
+
+        if (sequence is null) return NotFound();
+
+        return sequence;
+    }
+
+    [HttpPost("{idProject:length(24)}/{idEpisode:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Post(string idProject, string idEpisode, Sequence sequence)
     {
-        await _SequencesService.CreateAsync(idProject, idEpisode, sequence);
+        await _sequencesService.CreateAsync(idProject, idEpisode, sequence);
 
         return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence = sequence.Id }, sequence);
     }
 
-    [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, SequenceUpdateDTO updatedSequence)
+    [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
+    [Authorize]
+    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence,
+        SequenceUpdateDTO updatedSequence)
     {
-        var sequence = await _SequencesService.GetAsync(idProject, idEpisode, idSequence);
+        var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
 
-        if (sequence is null)
-        {
-            return NotFound();
-        }
+        if (sequence is null) return NotFound();
 
-        await _SequencesService.UpdateAsync(idProject, idEpisode, idSequence, updatedSequence);
+        await _sequencesService.UpdateAsync(idProject, idEpisode, idSequence, updatedSequence);
 
         return NoContent();
     }
 
-    [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}"), Authorize]
+    [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Delete(string idProject, string idEpisode, string idSequence)
     {
-        var sequence = await _SequencesService.GetAsync(idProject, idEpisode, idSequence);
+        var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
 
-        if (sequence is null)
-        {
-            return NotFound();
-        }
+        if (sequence is null) return NotFound();
 
-        await _SequencesService.RemoveAsync(idProject, idEpisode, sequence);
+        await _sequencesService.RemoveAsync(idProject, idEpisode, sequence);
 
         return NoContent();
     }

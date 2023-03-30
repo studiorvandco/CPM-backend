@@ -1,78 +1,74 @@
-using CPMApi.Models;
-using CPMApi.Services;
+using CPM_backend.Models;
+using CPM_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPMApi.Controllers;
+namespace CPM_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ProjectsController : ControllerBase
 {
-    private readonly ProjectsService _ProjectsService;
-    private readonly EpisodesService _EpisodesService;
+    private readonly EpisodesService _episodesService;
+    private readonly ProjectsService _projectsService;
 
-    public ProjectsController(ProjectsService ProjectsService, EpisodesService EpisodesService)
+    public ProjectsController(ProjectsService projectsService, EpisodesService episodesService)
     {
-        _ProjectsService = ProjectsService;
-        _EpisodesService = EpisodesService;
+        _projectsService = projectsService;
+        _episodesService = episodesService;
     }
 
-    [HttpGet, Authorize]
-    public async Task<List<Project>> Get() => await _ProjectsService.GetAsync();
+    [HttpGet]
+    [Authorize]
+    public async Task<List<Project>> Get()
+    {
+        return await _projectsService.GetAsync();
+    }
 
-    [HttpGet("{id:length(24)}"), Authorize]
+    [HttpGet("{id:length(24)}")]
+    [Authorize]
     public async Task<ActionResult<Project>> Get(string id)
     {
-        var Project = await _ProjectsService.GetAsync(id);
+        var project = await _projectsService.GetAsync(id);
 
-        if (Project is null)
-        {
-            return NotFound();
-        }
+        if (project is null) return NotFound();
 
-        return Project;
+        return project;
     }
 
-    [HttpPost, Authorize]
+    [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Post(Project newProject)
     {
-        await _ProjectsService.CreateAsync(newProject);
+        await _projectsService.CreateAsync(newProject);
 
-        if (newProject.isMovie)
-        {
-            await _EpisodesService.CreateAsync(newProject.Id!, new Episode());
-        }
+        if (newProject.IsMovie) await _episodesService.CreateAsync(newProject.Id!, new Episode());
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
 
-    [HttpPut("{id:length(24)}"), Authorize]
+    [HttpPut("{id:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Update(string id, ProjectUpdateDTO updatedProject)
     {
-        var project = await _ProjectsService.GetAsync(id);
+        var project = await _projectsService.GetAsync(id);
 
-        if (project is null)
-        {
-            return NotFound();
-        }
+        if (project is null) return NotFound();
 
-        await _ProjectsService.UpdateAsync(id, updatedProject);
+        await _projectsService.UpdateAsync(id, updatedProject);
 
         return NoContent();
     }
 
-    [HttpDelete("{id:length(24)}"), Authorize]
+    [HttpDelete("{id:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Delete(string id)
     {
-        var Project = await _ProjectsService.GetAsync(id);
+        var project = await _projectsService.GetAsync(id);
 
-        if (Project is null)
-        {
-            return NotFound();
-        }
+        if (project is null) return NotFound();
 
-        await _ProjectsService.RemoveAsync(id);
+        await _projectsService.RemoveAsync(id);
 
         return NoContent();
     }

@@ -1,32 +1,38 @@
-using CPMApi.Models;
+using CPM_backend.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace CPMApi.Services;
+namespace CPM_backend.Services;
 
 public class UsersService
 {
     private readonly IMongoCollection<User> _usersCollection;
 
-    public UsersService(IOptions<DatabaseConfiguration> DatabaseConfiguration)
+    public UsersService(IOptions<DatabaseConfiguration> databaseConfiguration)
     {
-        var mongoClient = new MongoClient(DatabaseConfiguration.Value.Connection);
+        var mongoClient = new MongoClient(databaseConfiguration.Value.Connection);
 
-        var mongoDatabase = mongoClient.GetDatabase(DatabaseConfiguration.Value.Name);
+        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.Name);
 
         _usersCollection = mongoDatabase.GetCollection<User>(
-            DatabaseConfiguration.Value.UsersCollection
+            databaseConfiguration.Value.UsersCollection
         );
     }
 
-    public async Task<List<User>> GetAsync() =>
-        await _usersCollection.Find(_ => true).ToListAsync();
+    public async Task<List<User>> GetAsync()
+    {
+        return await _usersCollection.Find(_ => true).ToListAsync();
+    }
 
-    public async Task<User?> GetAsync(string id) =>
-        await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<User?> GetAsync(string id)
+    {
+        return await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
-    public async Task CreateAsync(User newUser) =>
+    public async Task CreateAsync(User newUser)
+    {
         await _usersCollection.InsertOneAsync(newUser);
+    }
 
     public async Task UpdateAsync(string id, UserUpdateDTO updatedUser)
     {
@@ -45,6 +51,8 @@ public class UsersService
         await _usersCollection.UpdateOneAsync(filter, update);
     }
 
-    public async Task RemoveAsync(string id) =>
+    public async Task RemoveAsync(string id)
+    {
         await _usersCollection.DeleteOneAsync(x => x.Id == id);
+    }
 }

@@ -1,39 +1,41 @@
-using CPMApi.Models;
+using CPM_backend.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace CPMApi.Services;
+namespace CPM_backend.Services;
 
 public class EpisodesService
 {
-    private readonly IMongoCollection<Project> _ProjectsCollection;
+    private readonly IMongoCollection<Project> _projectsCollection;
 
-    public EpisodesService(IOptions<DatabaseConfiguration> DatabaseConfiguration)
+    public EpisodesService(IOptions<DatabaseConfiguration> databaseConfiguration)
     {
-        var mongoClient = new MongoClient(DatabaseConfiguration.Value.Connection);
+        var mongoClient = new MongoClient(databaseConfiguration.Value.Connection);
 
-        var mongoDatabase = mongoClient.GetDatabase(DatabaseConfiguration.Value.Name);
+        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.Name);
 
-        _ProjectsCollection = mongoDatabase.GetCollection<Project>(
-            DatabaseConfiguration.Value.ProjectsCollection
+        _projectsCollection = mongoDatabase.GetCollection<Project>(
+            databaseConfiguration.Value.ProjectsCollection
         );
     }
 
-    public async Task<List<Episode>> GetAsync(string idProject) =>
-        await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
-                                .Project(p => p.Episodes)
-                                .ToListAsync()
-                                .ContinueWith(t => t.Result.SelectMany(e => e).ToList());
+    public async Task<List<Episode>> GetAsync(string idProject)
+    {
+        return await _projectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
+            .Project(p => p.Episodes)
+            .ToListAsync()
+            .ContinueWith(t => t.Result.SelectMany(e => e).ToList());
+    }
 
     public async Task<Episode?> GetAsync(string idProject, string idEpisode)
     {
-        var episodes = await _ProjectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
-                                                .Project(p => p.Episodes)
-                                                .ToListAsync();
+        var episodes = await _projectsCollection.Find(Builders<Project>.Filter.Eq(p => p.Id, idProject))
+            .Project(p => p.Episodes)
+            .ToListAsync();
 
         var episode = episodes.SelectMany(e => e)
-                            .FirstOrDefault(e => e.Id == idEpisode);
+            .FirstOrDefault(e => e.Id == idEpisode);
 
         return episode;
     }
@@ -42,21 +44,17 @@ public class EpisodesService
     {
         var filter = Builders<Project>.Filter.Eq(p => p.Id, projectId);
 
-        var project = await _ProjectsCollection.Find(filter).FirstOrDefaultAsync();
+        var project = await _projectsCollection.Find(filter).FirstOrDefaultAsync();
         if (project == null) return;
 
         if (project.Episodes.Count == 0)
-        {
             episode.Number = 1;
-        }
         else
-        {
             episode.Number = project.Episodes.Max(e => e.Number) + 1;
-        }
 
         var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
 
-        await _ProjectsCollection.UpdateOneAsync(filter, update);
+        await _projectsCollection.UpdateOneAsync(filter, update);
     }
 
 
@@ -72,7 +70,7 @@ public class EpisodesService
             .Inc(p => p.ShotsTotal, -episode.ShotsTotal)
             .Inc(p => p.ShotsCompleted, -episode.ShotsCompleted);
 
-        var result = await _ProjectsCollection.UpdateOneAsync(filter, update);
+        await _projectsCollection.UpdateOneAsync(filter, update);
     }
 
     public async Task UpdateAsync(string projectId, string episodeId, EpisodeUpdateDTO updatedEpisode)
@@ -82,18 +80,18 @@ public class EpisodesService
             Builders<Project>.Filter.ElemMatch(p => p.Episodes, e => e.Id == episodeId)
         );
 
-        var episode = (await _ProjectsCollection.Find(filter).FirstOrDefaultAsync())
-                            ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
+        var episode = (await _projectsCollection.Find(filter).FirstOrDefaultAsync())
+            ?.Episodes.FirstOrDefault(e => e.Id == episodeId);
         if (episode == null) return;
 
         var update = Builders<Project>.Update
-            .Set(p => p.Episodes.FirstMatchingElement().Number, updatedEpisode.Number == 0 ? episode.Number : updatedEpisode.Number)
+            .Set(p => p.Episodes.FirstMatchingElement().Number,
+                updatedEpisode.Number == 0 ? episode.Number : updatedEpisode.Number)
             .Set(p => p.Episodes.FirstMatchingElement().Title, updatedEpisode.Title ?? episode.Title)
             .Set(p => p.Episodes.FirstMatchingElement().Description, updatedEpisode.Description ?? episode.Description)
             .Set(p => p.Episodes.FirstMatchingElement().Writer, updatedEpisode.Writer ?? episode.Writer)
             .Set(p => p.Episodes.FirstMatchingElement().Director, updatedEpisode.Director ?? episode.Director);
 
-        await _ProjectsCollection.UpdateOneAsync(filter, update);
+        await _projectsCollection.UpdateOneAsync(filter, update);
     }
-
 }

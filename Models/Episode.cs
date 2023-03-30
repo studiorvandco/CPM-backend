@@ -1,14 +1,14 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Episode
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; private set; } = ObjectId.GenerateNewId().ToString();
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
@@ -50,25 +50,18 @@ public class Episode
     [JsonPropertyName("sequences")]
     [BsonDefaultValue("[]")]
     [JsonIgnore]
-    public List<Sequence> Sequences { get; private set; } = new List<Sequence>();
-
+    public List<Sequence> Sequences { get; } = new();
 }
 
 public class EpisodeUpdateDTO
 {
-    [JsonPropertyName("number")]
-    public int Number { get; set; } = 0;
+    [JsonPropertyName("number")] public int Number { get; set; } = 0;
 
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-    [JsonPropertyName("director")]
-    public string? Director { get; set; }
+    [JsonPropertyName("director")] public string? Director { get; set; }
 
-    [JsonPropertyName("writer")]
-    public string? Writer { get; set; }
-
+    [JsonPropertyName("writer")] public string? Writer { get; set; }
 }

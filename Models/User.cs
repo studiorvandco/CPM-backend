@@ -1,9 +1,9 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 using BC = BCrypt.Net.BCrypt;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class User
 {
@@ -19,15 +19,12 @@ public class User
     [BsonRequired]
     [JsonIgnore]
     [BsonElement("Hash")]
-    public string Hash { get; set; } = null!;
+    public string Hash { get; private set; } = null!;
 
     [BsonIgnore]
     public string Password
     {
-        set
-        {
-            Hash = BC.HashPassword(value);
-        }
+        set => Hash = BC.HashPassword(value);
     }
 }
 

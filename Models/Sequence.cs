@@ -1,14 +1,14 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Sequence
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; private set; } = ObjectId.GenerateNewId().ToString();
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
@@ -50,25 +50,18 @@ public class Sequence
     [JsonPropertyName("shots")]
     [BsonDefaultValue("[]")]
     [JsonIgnore]
-    public List<Shot> Shots { get; private set; } = new List<Shot>();
-
+    public List<Shot> Shots { get; } = new();
 }
 
 public class SequenceUpdateDTO
 {
-    [JsonPropertyName("number")]
-    public int Number { get; set; } = 0;
+    [JsonPropertyName("number")] public int Number { get; set; } = 0;
 
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")]
-    public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")]
-    public DateTimeOffset? EndDate { get; set; }
-
+    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
 }

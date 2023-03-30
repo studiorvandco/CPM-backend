@@ -1,8 +1,8 @@
-using CPMApi.Models;
+using CPM_backend.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace CPMApi.Services;
+namespace CPM_backend.Services;
 
 public class LocationsService
 {
@@ -19,18 +19,28 @@ public class LocationsService
         );
     }
 
-    public async Task<List<Location>> GetAsync() =>
-        await _locationsCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Location>> GetAsync()
+    {
+        return await _locationsCollection.Find(_ => true).ToListAsync();
+    }
 
-    public async Task<Location?> GetAsync(string id) =>
-        await _locationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<Location?> GetAsync(string id)
+    {
+        return await _locationsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
-    public async Task CreateAsync(Location newLocation) =>
+    public async Task CreateAsync(Location newLocation)
+    {
         await _locationsCollection.InsertOneAsync(newLocation);
+    }
 
-    public async Task UpdateAsync(string id, Location updatedLocation) =>
+    public async Task UpdateAsync(string id, Location updatedLocation)
+    {
         await _locationsCollection.ReplaceOneAsync(x => x.Id == id, updatedLocation);
+    }
 
-    public async Task RemoveAsync(string id) =>
+    public async Task RemoveAsync(string id)
+    {
         await _locationsCollection.DeleteOneAsync(x => x.Id == id);
+    }
 }

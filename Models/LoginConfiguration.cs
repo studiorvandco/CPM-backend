@@ -1,4 +1,4 @@
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class LoginConfiguration
 {

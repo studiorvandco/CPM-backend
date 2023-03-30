@@ -1,14 +1,14 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Shot
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; private set; } = ObjectId.GenerateNewId().ToString();
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
@@ -34,25 +34,18 @@ public class Shot
     [BsonElement("Completed")]
     [JsonPropertyName("completed")]
     [BsonDefaultValue("false")]
-    public Boolean Completed { get; set; } = false;
-
+    public bool Completed { get; set; } = false;
 }
 
 public class ShotUpdateDTO
 {
-    [JsonPropertyName("number")]
-    public int Number { get; set; }
+    [JsonPropertyName("number")] public int Number { get; set; }
 
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-    [JsonPropertyName("value")]
-    public string? Value { get; set; }
+    [JsonPropertyName("value")] public string? Value { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-    [JsonPropertyName("completed")]
-    public Boolean? Completed { get; set; }
-
+    [JsonPropertyName("completed")] public bool? Completed { get; set; }
 }

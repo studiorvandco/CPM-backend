@@ -1,8 +1,8 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Project
 {
@@ -47,26 +47,22 @@ public class Project
     [JsonRequired]
     [BsonElement("isMovie")]
     [JsonPropertyName("is_movie")]
-    public Boolean isMovie { get; set; }
+    public bool IsMovie { get; set; }
 
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]
     [JsonIgnore]
-    public List<Episode> Episodes { get; private set; } = new List<Episode>();
+    public List<Episode> Episodes { get; } = new();
 }
 
 public class ProjectUpdateDTO
 {
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")]
-    public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")]
-    public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
 }
