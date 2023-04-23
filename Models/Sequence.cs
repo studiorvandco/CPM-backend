@@ -1,58 +1,67 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Sequence
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
-    [JsonPropertyName("Number")]
-    public int Number { get; set; }
+    [JsonPropertyName("number")]
+    public int Number { get; internal set; } = 0;
 
+    [BsonRequired]
+    [JsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    [BsonDefaultValue("")]
+    public string Description { get; set; } = "";
 
-    [BsonElement("Date")]
-    [JsonPropertyName("Date")]
-    public DateTimeOffset? Date { get; set; }
+    [BsonRequired]
+    [BsonElement("BeginDate")]
+    [JsonPropertyName("begin_date")]
+    public DateTimeOffset BeginDate { get; set; } = DateTimeOffset.MinValue;
 
-    [BsonElement("Time")]
-    [JsonPropertyName("Time")]
-    public string? Time { get; set; }
+    [BsonRequired]
+    [BsonElement("EndDate")]
+    [JsonPropertyName("end_date")]
+    public DateTimeOffset EndDate { get; set; } = DateTimeOffset.MaxValue;
+
+    [BsonElement("ShotsTotal")]
+    [JsonPropertyName("shots_total")]
+    [BsonDefaultValue("0")]
+    public int ShotsTotal { get; internal set; } = 0;
+
+    [BsonElement("ShotsCompleted")]
+    [JsonPropertyName("shots_completed")]
+    [BsonDefaultValue("0")]
+    public int ShotsCompleted { get; internal set; } = 0;
 
     [BsonElement("Shots")]
-    [JsonPropertyName("Shots")]
-    public List<Shot>? Shots { get; set; }
+    [JsonPropertyName("shots")]
+    [BsonDefaultValue("[]")]
+    [JsonIgnore]
+    public List<Shot> Shots { get; } = new();
+}
 
-    public Sequence cloneSequence()
-    {
-        Sequence newSequence = new Sequence();
+public class SequenceUpdateDTO
+{
+    [JsonPropertyName("number")] public int Number { get; set; } = 0;
 
-        newSequence.Id = this.Id;
-        newSequence.Number = this.Number;
-        newSequence.Title = this.Title;
-        newSequence.Description = this.Description;
-        newSequence.Date = this.Date;
-        newSequence.Time = this.Time;
-        if (this.Shots == null)
-            newSequence.Shots = null;
-        else
-            for (int i = 0; i < this.Shots.Count; i++)
-            {
-                Shots[i] = this.Shots[i].cloneShot();
-            }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-        return newSequence;
-    }
+    [JsonPropertyName("description")] public string? Description { get; set; }
+
+    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
+
+    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
 }

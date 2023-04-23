@@ -1,8 +1,8 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Character
 {
@@ -11,10 +11,12 @@ public class Character
     public string? Id { get; set; }
 
     [BsonElement("FirstName")]
-    [JsonPropertyName("FirstName")]
-    public string? FirstName { get; set; }
+    [JsonPropertyName("first_name")]
+    [BsonDefaultValue("")]
+    public string FirstName { get; set; } = "";
 
     [BsonElement("LastName")]
-    [JsonPropertyName("LastName")]
-    public string? LastName { get; set; }
+    [JsonPropertyName("last_name")]
+    [BsonDefaultValue("")]
+    public string LastName { get; set; } = "";
 }

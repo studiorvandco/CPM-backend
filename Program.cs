@@ -1,8 +1,9 @@
 using System.Text;
-using CPMApi.Models;
-using CPMApi.Services;
+using CPM_backend.Models;
+using CPM_backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,9 @@ builder.Services.AddSingleton<UsersService>();
 builder.Services.AddSingleton<LocationsService>();
 builder.Services.AddSingleton<MembersService>();
 builder.Services.AddSingleton<ProjectsService>();
+builder.Services.AddSingleton<EpisodesService>();
+builder.Services.AddSingleton<SequencesService>();
+builder.Services.AddSingleton<ShotsService>();
 builder.Services
     .AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
@@ -29,7 +33,7 @@ builder.Services
     {
         options.SaveToken = true;
         options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
@@ -38,7 +42,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
                     builder.Configuration.GetSection("Login")["Key"]
-                        ?? throw new Exception("Key is missing from the login configuration")
+                    ?? throw new Exception("Key is missing from the login configuration")
                 )
             )
         };
@@ -69,11 +73,12 @@ builder.Services.AddSwaggerGen(option =>
                         Id = "Bearer"
                     }
                 },
-                new string[] { }
+                Array.Empty<string>()
             }
         }
     );
 });
+builder.Services.AddCors();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -81,7 +86,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors(corsPolicyBuilder =>
+    corsPolicyBuilder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .WithHeaders(
+            HeaderNames.ContentType,
+            HeaderNames.Authorization
+        )
+);
 app.MapControllers();
 app.Run();

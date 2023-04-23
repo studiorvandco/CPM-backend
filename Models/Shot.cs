@@ -1,48 +1,51 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Shot
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [BsonElement("Number")]
-    [JsonPropertyName("Number")]
-    public int Number { get; set; }
+    [JsonPropertyName("number")]
+    public int Number { get; internal set; }
 
+    [BsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    [JsonRequired]
+    public string Title { get; set; } = null!;
 
     [BsonElement("Value")]
-    [JsonPropertyName("Value")]
-    public string? Value { get; set; }
+    [JsonPropertyName("value")]
+    [BsonDefaultValue("")]
+    public string Value { get; set; } = "";
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    [BsonDefaultValue("")]
+    public string Description { get; set; } = "";
 
     [BsonElement("Completed")]
-    [JsonPropertyName("Completed")]
-    public Boolean Completed { get; set; }
+    [JsonPropertyName("completed")]
+    [BsonDefaultValue("false")]
+    public bool Completed { get; set; } = false;
+}
 
-    public Shot cloneShot()
-    {
-        Shot newShot = new Shot();
+public class ShotUpdateDTO
+{
+    [JsonPropertyName("number")] public int Number { get; set; }
 
-        newShot.Id = this.Id;
-        newShot.Number = this.Number;
-        newShot.Title = this.Title;
-        newShot.Value = this.Value;
-        newShot.Description = this.Description;
-        newShot.Completed = this.Completed;
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-        return newShot;
-    }
+    [JsonPropertyName("value")] public string? Value { get; set; }
 
+    [JsonPropertyName("description")] public string? Description { get; set; }
+
+    [JsonPropertyName("completed")] public bool? Completed { get; set; }
 }

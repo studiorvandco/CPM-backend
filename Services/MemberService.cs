@@ -1,36 +1,46 @@
-using CPMApi.Models;
+using CPM_backend.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace CPMApi.Services;
+namespace CPM_backend.Services;
 
 public class MembersService
 {
     private readonly IMongoCollection<Member> _membersCollection;
 
-    public MembersService(IOptions<DatabaseConfiguration> DatabaseConfiguration)
+    public MembersService(IOptions<DatabaseConfiguration> databaseConfiguration)
     {
-        var mongoClient = new MongoClient(DatabaseConfiguration.Value.Connection);
+        var mongoClient = new MongoClient(databaseConfiguration.Value.Connection);
 
-        var mongoDatabase = mongoClient.GetDatabase(DatabaseConfiguration.Value.Name);
+        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.Name);
 
         _membersCollection = mongoDatabase.GetCollection<Member>(
-            DatabaseConfiguration.Value.MembersCollection
+            databaseConfiguration.Value.MembersCollection
         );
     }
 
-    public async Task<List<Member>> GetAsync() =>
-        await _membersCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Member>> GetAsync()
+    {
+        return await _membersCollection.Find(_ => true).ToListAsync();
+    }
 
-    public async Task<Member?> GetAsync(string id) =>
-        await _membersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<Member?> GetAsync(string id)
+    {
+        return await _membersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
-    public async Task CreateAsync(Member newMember) =>
+    public async Task CreateAsync(Member newMember)
+    {
         await _membersCollection.InsertOneAsync(newMember);
+    }
 
-    public async Task UpdateAsync(string id, Member updatedMember) =>
+    public async Task UpdateAsync(string id, Member updatedMember)
+    {
         await _membersCollection.ReplaceOneAsync(x => x.Id == id, updatedMember);
+    }
 
-    public async Task RemoveAsync(string id) =>
+    public async Task RemoveAsync(string id)
+    {
         await _membersCollection.DeleteOneAsync(x => x.Id == id);
+    }
 }

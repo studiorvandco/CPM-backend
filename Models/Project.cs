@@ -1,76 +1,68 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Project
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string? Id { get; private set; }
 
+    [BsonRequired]
+    [JsonRequired]
     [BsonElement("Title")]
-    [JsonPropertyName("Title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = null!;
 
     [BsonElement("Description")]
-    [JsonPropertyName("Description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    [BsonDefaultValue("")]
+    public string Description { get; set; } = "";
 
+    [BsonRequired]
+    [JsonRequired]
     [BsonElement("BeginDate")]
-    [JsonPropertyName("BeginDate")]
-    public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")]
+    public DateTimeOffset BeginDate { get; set; } = DateTimeOffset.MinValue;
 
+    [BsonRequired]
+    [JsonRequired]
     [BsonElement("EndDate")]
-    [JsonPropertyName("EndDate")]
-    public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")]
+    public DateTimeOffset EndDate { get; set; } = DateTimeOffset.MaxValue;
 
-    [BsonRequired]
     [BsonElement("ShotsTotal")]
-    [JsonPropertyName("ShotsTotal")]
-    public int ShotsTotal { get; set; }
+    [JsonPropertyName("shots_total")]
+    [BsonDefaultValue("0")]
+    public int ShotsTotal { get; internal set; } = 0;
+
+    [BsonElement("ShotsCompleted")]
+    [JsonPropertyName("shots_completed")]
+    [BsonDefaultValue("0")]
+    public int ShotsCompleted { get; internal set; } = 0;
 
     [BsonRequired]
-    [BsonElement("ShotsCompleted")]
-    [JsonPropertyName("ShotsCompleted")]
-    public int ShotsCompleted { get; set; }
-
-    [BsonElement("isFilm")]
-    [JsonPropertyName("isFilm")]
-    public Boolean? isFilm { get; set; }
-
-    [BsonElement("isSerie")]
-    [JsonPropertyName("isSerie")]
-    public Boolean? isSerie { get; set; }
+    [JsonRequired]
+    [BsonElement("isMovie")]
+    [JsonPropertyName("is_movie")]
+    public bool IsMovie { get; set; }
 
     [BsonElement("Episodes")]
-    [JsonPropertyName("Episodes")]
-    public List<Episode>? Episodes { get; set; }
+    [JsonPropertyName("episodes")]
+    [BsonDefaultValue("[]")]
+    [JsonIgnore]
+    public List<Episode> Episodes { get; } = new();
+}
 
-    public Project cloneProject()
-    {
-        Project newProject = new Project();
+public class ProjectUpdateDTO
+{
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-        newProject.Id = this.Id;
-        newProject.Title = this.Title;
-        newProject.Description = this.Description;
-        newProject.BeginDate = this.BeginDate;
-        newProject.EndDate = this.EndDate;
-        newProject.ShotsTotal = this.ShotsTotal;
-        newProject.ShotsCompleted = this.ShotsCompleted;
-        newProject.isFilm = this.isFilm;
-        newProject.isSerie = this.isSerie;
-        newProject.Episodes = this.Episodes;
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-        if (this.Episodes == null)
-            newProject.Episodes = null;
-        else
-            for (int i = 0; i < this.Episodes.Count; i++)
-            {
-                Episodes[i] = this.Episodes[i].cloneEpisode();
-            }
+    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
 
-        return newProject;
-    }
+    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
 }

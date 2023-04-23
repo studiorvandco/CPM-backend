@@ -1,8 +1,8 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
 
-namespace CPMApi.Models;
+namespace CPM_backend.Models;
 
 public class Member
 {
@@ -12,19 +12,20 @@ public class Member
 
     [BsonRequired]
     [BsonElement("FirstName")]
-    [JsonPropertyName("FirstName")]
+    [JsonPropertyName("first_name")]
     public string FirstName { get; set; } = null!;
 
     [BsonElement("LastName")]
-    [JsonPropertyName("LastName")]
-    public string? LastName { get; set; }
+    [JsonPropertyName("last_name")]
+    [BsonDefaultValue("")]
+    public string LastName { get; set; } = "";
 
-    [BsonElement("PhoneNumber")]
-    [JsonPropertyName("PhoneNumber")]
-    public string? PhoneNumber { get; set; }
+    [BsonElement("Phone")]
+    [JsonPropertyName("phone")]
+    [BsonDefaultValue("")]
+    public string Phone { get; set; } = "";
 
-    public Member cloneMember()
-    {
+    /*public Member cloneMember(){
         Member newMember = new Member();
 
         newMember.Id = this.Id;
@@ -33,5 +34,5 @@ public class Member
         newMember.PhoneNumber = this.PhoneNumber;
 
         return newMember;
-    }
+    }*/
 }

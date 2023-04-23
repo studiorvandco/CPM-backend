@@ -1,97 +1,74 @@
-using CPMApi.Models;
-using CPMApi.Services;
+using CPM_backend.Models;
+using CPM_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CPMApi.Controllers;
+namespace CPM_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ProjectsController : ControllerBase
 {
-    private readonly ProjectsService _ProjectsService;
+    private readonly EpisodesService _episodesService;
+    private readonly ProjectsService _projectsService;
 
-    public ProjectsController(ProjectsService ProjectsService) =>
-        _ProjectsService = ProjectsService;
-
-    [HttpGet, Authorize]
-    public async Task<List<Project>> Get() =>
-        await _ProjectsService.GetAsync();
-
-    [HttpGet("{id:length(24)}"), Authorize]
-    public async Task<ActionResult<Project>> Get(string id)
+    public ProjectsController(ProjectsService projectsService, EpisodesService episodesService)
     {
-        var Project = await _ProjectsService.GetAsync(id);
-
-        if (Project is null)
-        {
-            return NotFound();
-        }
-
-        return Project;
+        _projectsService = projectsService;
+        _episodesService = episodesService;
     }
 
-    [HttpPost, Authorize]
+    [HttpGet]
+    [Authorize]
+    public async Task<List<Project>> Get()
+    {
+        return await _projectsService.GetAsync();
+    }
+
+    [HttpGet("{id:length(24)}")]
+    [Authorize]
+    public async Task<ActionResult<Project>> Get(string id)
+    {
+        var project = await _projectsService.GetAsync(id);
+
+        if (project is null) return NotFound();
+
+        return project;
+    }
+
+    [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Post(Project newProject)
     {
-        await _ProjectsService.CreateAsync(newProject);
+        await _projectsService.CreateAsync(newProject);
+
+        if (newProject.IsMovie) await _episodesService.CreateAsync(newProject.Id!, new Episode());
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
 
-    [HttpPut("{id:length(24)}"), Authorize]
-    public async Task<IActionResult> Update(string id, Project updatedProject)
+    [HttpPut("{id:length(24)}")]
+    [Authorize]
+    public async Task<IActionResult> Update(string id, ProjectUpdateDTO updatedProject)
     {
-        var project = await _ProjectsService.GetAsync(id);
+        var project = await _projectsService.GetAsync(id);
 
-        if (project is null)
-        {
-            return NotFound();
-        }
+        if (project is null) return NotFound();
 
-        Project newProject = project.cloneProject();
-
-        if (updatedProject.Title != null)
-            newProject.Title = updatedProject.Title;
-
-        if (updatedProject.Description != null)
-            newProject.Description = updatedProject.Description;
-
-        if (updatedProject.BeginDate != null)
-            newProject.BeginDate = updatedProject.BeginDate;
-
-        if (updatedProject.EndDate != null)
-            newProject.EndDate = updatedProject.EndDate;
-
-        // WARNING : We always replace new value here
-        newProject.ShotsTotal = updatedProject.ShotsTotal;
-        newProject.ShotsCompleted = updatedProject.ShotsCompleted;
-
-        if (updatedProject.isFilm != null)
-            newProject.isFilm = updatedProject.isFilm;
-
-        if (updatedProject.isSerie != null)
-            newProject.isSerie = updatedProject.isSerie;
-
-        if (updatedProject.Episodes != null)
-            newProject.Episodes = updatedProject.Episodes;
-
-        await _ProjectsService.UpdateAsync(id, newProject);
+        await _projectsService.UpdateAsync(id, updatedProject);
 
         return NoContent();
     }
 
-    [HttpDelete("{id:length(24)}"), Authorize]
+    [HttpDelete("{id:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Delete(string id)
     {
-        var Project = await _ProjectsService.GetAsync(id);
+        var project = await _projectsService.GetAsync(id);
 
-        if (Project is null)
-        {
-            return NotFound();
-        }
+        if (project is null) return NotFound();
 
-        await _ProjectsService.RemoveAsync(id);
+        await _projectsService.RemoveAsync(id);
 
         return NoContent();
     }
