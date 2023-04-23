@@ -45,7 +45,7 @@ public class Project
 
     [BsonRequired]
     [JsonRequired]
-    [BsonElement("isMovie")]
+    [BsonElement("IsMovie")]
     [JsonPropertyName("is_movie")]
     public bool IsMovie { get; set; }
 
@@ -58,11 +58,15 @@ public class Project
 
 public class ProjectUpdateDTO
 {
-    [JsonPropertyName("title")] public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")]
+    public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")]
+    public DateTimeOffset? EndDate { get; set; }
 }
