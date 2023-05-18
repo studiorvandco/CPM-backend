@@ -10,9 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: super-linter/super-linter@v5
+      - uses: actions/setup-dotnet@v3
+      - run: dotnet format style --severity info --verify-no-changes
   format:
     name: Format
     runs-on: ubuntu-latest
