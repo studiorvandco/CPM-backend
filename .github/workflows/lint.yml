@@ -14,7 +14,9 @@ jobs:
           fetch-depth: 0
       - uses: super-linter/super-linter@v5
   format:
-    - steps:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/setup-dotnet@v3
       - run: |
           dotnet tool restore
