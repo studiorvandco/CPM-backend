@@ -42,7 +42,8 @@ public class ProjectsController : ControllerBase
     {
         await _projectsService.CreateAsync(newProject);
 
-        if (newProject.IsMovie) await _episodesService.CreateAsync(newProject.Id!, new Episode());
+        if (newProject.ProjectType == ProjectType.Movie)
+            await _episodesService.CreateAsync(newProject.Id, new Episode());
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }

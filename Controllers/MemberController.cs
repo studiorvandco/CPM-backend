@@ -51,8 +51,6 @@ public class MembersController : ControllerBase
 
         if (member is null) return NotFound();
 
-        updatedMember.Id = member.Id;
-
         await _membersService.UpdateAsync(id, updatedMember);
 
         return NoContent();

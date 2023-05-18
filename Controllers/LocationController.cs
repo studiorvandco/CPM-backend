@@ -51,8 +51,6 @@ public class LocationsController : ControllerBase
 
         if (location is null) return NotFound();
 
-        updatedLocation.Id = location.Id;
-
         await _locationsService.UpdateAsync(id, updatedLocation);
 
         return NoContent();

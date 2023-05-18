@@ -13,6 +13,12 @@ public class Project
 
     [BsonRequired]
     [JsonRequired]
+    [BsonElement("ProjectType")]
+    [JsonPropertyName("project_type")]
+    public ProjectType ProjectType { get; set; } = ProjectType.Movie;
+
+    [BsonRequired]
+    [JsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("title")]
     public string Title { get; set; } = null!;
@@ -44,11 +50,6 @@ public class Project
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
-    [BsonRequired]
-    [JsonRequired]
-    [BsonElement("IsMovie")]
-    [JsonPropertyName("is_movie")]
-    public bool IsMovie { get; set; }
 
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
@@ -59,6 +60,8 @@ public class Project
 
 public class ProjectUpdateDTO
 {
+    [JsonPropertyName("project_type")] public string? ProjectType { get; set; }
+
     [JsonPropertyName("title")] public string? Title { get; set; }
 
     [JsonPropertyName("description")] public string? Description { get; set; }
