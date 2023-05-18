@@ -30,9 +30,9 @@ public class Project
 
     [BsonRequired]
     [JsonRequired]
-    [BsonElement("BeginDate")]
-    [JsonPropertyName("begin_date")]
-    public DateTimeOffset BeginDate { get; set; } = DateTimeOffset.MinValue;
+    [BsonElement("StartDate")]
+    [JsonPropertyName("start_date")]
+    public DateTimeOffset StartDate { get; set; } = DateTimeOffset.MinValue;
 
     [BsonRequired]
     [JsonRequired]

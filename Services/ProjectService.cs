@@ -44,7 +44,7 @@ public class ProjectsService
         var update = Builders<Project>.Update
             .Set(p => p.Title, updatedProject.Title ?? project.Title)
             .Set(p => p.Description, updatedProject.Description ?? project.Description)
-            .Set(p => p.BeginDate, updatedProject.BeginDate ?? project.BeginDate)
+            .Set(p => p.StartDate, updatedProject.BeginDate ?? project.StartDate)
             .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate);
 
         await _projectsCollection.UpdateOneAsync(filter, update);
