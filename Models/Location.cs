@@ -9,7 +9,7 @@ public class Location
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("id")]
-    public string Id { get; } = ObjectId.GenerateNewId().ToString();
+    public string? Id { get; set; }
 
     [BsonRequired]
     [BsonElement("Name")]
