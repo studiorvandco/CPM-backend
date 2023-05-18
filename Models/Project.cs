@@ -8,7 +8,8 @@ public class Project
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; private set; }
+    [JsonPropertyName("id")]
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [JsonRequired]
@@ -58,15 +59,11 @@ public class Project
 
 public class ProjectUpdateDTO
 {
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    [JsonPropertyName("title")] public string? Title { get; set; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("description")] public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")]
-    public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")]
-    public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
 }

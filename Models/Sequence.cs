@@ -8,6 +8,7 @@ public class Sequence
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
+    [JsonPropertyName("id")]
     public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
