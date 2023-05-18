@@ -59,11 +59,15 @@ public class Project
 
 public class ProjectUpdateDTO
 {
-    [JsonPropertyName("title")] public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")]
+    public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")]
+    public DateTimeOffset? EndDate { get; set; }
 }

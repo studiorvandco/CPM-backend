@@ -56,13 +56,18 @@ public class Episode
 
 public class EpisodeUpdateDTO
 {
-    [JsonPropertyName("number")] public int Number { get; set; } = 0;
+    [JsonPropertyName("number")]
+    public int Number { get; set; } = 0;
 
-    [JsonPropertyName("title")] public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-    [JsonPropertyName("director")] public string? Director { get; set; }
+    [JsonPropertyName("director")]
+    public string? Director { get; set; }
 
-    [JsonPropertyName("writer")] public string? Writer { get; set; }
+    [JsonPropertyName("writer")]
+    public string? Writer { get; set; }
 }

@@ -56,13 +56,18 @@ public class Sequence
 
 public class SequenceUpdateDTO
 {
-    [JsonPropertyName("number")] public int Number { get; set; } = 0;
+    [JsonPropertyName("number")]
+    public int Number { get; set; } = 0;
 
-    [JsonPropertyName("title")] public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-    [JsonPropertyName("begin_date")] public DateTimeOffset? BeginDate { get; set; }
+    [JsonPropertyName("begin_date")]
+    public DateTimeOffset? BeginDate { get; set; }
 
-    [JsonPropertyName("end_date")] public DateTimeOffset? EndDate { get; set; }
+    [JsonPropertyName("end_date")]
+    public DateTimeOffset? EndDate { get; set; }
 }

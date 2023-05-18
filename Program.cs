@@ -42,7 +42,7 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
                     builder.Configuration.GetSection("Login")["Key"]
-                    ?? throw new Exception("Key is missing from the login configuration")
+                        ?? throw new Exception("Key is missing from the login configuration")
                 )
             )
         };

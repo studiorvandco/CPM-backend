@@ -40,13 +40,18 @@ public class Shot
 
 public class ShotUpdateDTO
 {
-    [JsonPropertyName("number")] public int Number { get; set; }
+    [JsonPropertyName("number")]
+    public int Number { get; set; }
 
-    [JsonPropertyName("title")] public string? Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
-    [JsonPropertyName("value")] public string? Value { get; set; }
+    [JsonPropertyName("value")]
+    public string? Value { get; set; }
 
-    [JsonPropertyName("description")] public string? Description { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 
-    [JsonPropertyName("completed")] public bool? Completed { get; set; }
+    [JsonPropertyName("completed")]
+    public bool? Completed { get; set; }
 }
