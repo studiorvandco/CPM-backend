@@ -29,7 +29,8 @@ public class MembersController : ControllerBase
     {
         var member = await _membersService.GetAsync(id);
 
-        if (member is null) return NotFound();
+        if (member is null)
+            return NotFound();
 
         return member;
     }
@@ -49,7 +50,8 @@ public class MembersController : ControllerBase
     {
         var member = await _membersService.GetAsync(id);
 
-        if (member is null) return NotFound();
+        if (member is null)
+            return NotFound();
 
         await _membersService.UpdateAsync(id, updatedMember);
 
@@ -62,7 +64,8 @@ public class MembersController : ControllerBase
     {
         var member = await _membersService.GetAsync(id);
 
-        if (member is null) return NotFound();
+        if (member is null)
+            return NotFound();
 
         await _membersService.RemoveAsync(id);
 

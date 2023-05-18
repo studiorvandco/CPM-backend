@@ -25,11 +25,16 @@ public class SequencesController : ControllerBase
 
     [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
     [Authorize]
-    public async Task<ActionResult<Sequence>> Get(string idProject, string idEpisode, string idSequence)
+    public async Task<ActionResult<Sequence>> Get(
+        string idProject,
+        string idEpisode,
+        string idSequence
+    )
     {
         var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
 
-        if (sequence is null) return NotFound();
+        if (sequence is null)
+            return NotFound();
 
         return sequence;
     }
@@ -40,17 +45,31 @@ public class SequencesController : ControllerBase
     {
         await _sequencesService.CreateAsync(idProject, idEpisode, sequence);
 
-        return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence = sequence.Id }, sequence);
+        return CreatedAtAction(
+            nameof(Get),
+            new
+            {
+                idProject,
+                idEpisode,
+                idSequence = sequence.Id
+            },
+            sequence
+        );
     }
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
     [Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence,
-        SequenceUpdateDTO updatedSequence)
+    public async Task<IActionResult> Update(
+        string idProject,
+        string idEpisode,
+        string idSequence,
+        SequenceUpdateDTO updatedSequence
+    )
     {
         var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
 
-        if (sequence is null) return NotFound();
+        if (sequence is null)
+            return NotFound();
 
         await _sequencesService.UpdateAsync(idProject, idEpisode, idSequence, updatedSequence);
 
@@ -63,7 +82,8 @@ public class SequencesController : ControllerBase
     {
         var sequence = await _sequencesService.GetAsync(idProject, idEpisode, idSequence);
 
-        if (sequence is null) return NotFound();
+        if (sequence is null)
+            return NotFound();
 
         await _sequencesService.RemoveAsync(idProject, idEpisode, sequence);
 

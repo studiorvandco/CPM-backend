@@ -89,13 +89,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseCors(corsPolicyBuilder =>
-    corsPolicyBuilder.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .WithHeaders(
-            HeaderNames.ContentType,
-            HeaderNames.Authorization
-        )
+app.UseCors(
+    corsPolicyBuilder =>
+        corsPolicyBuilder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization)
 );
 app.MapControllers();
 app.Run();

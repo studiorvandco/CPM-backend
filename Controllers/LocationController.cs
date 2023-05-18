@@ -29,7 +29,8 @@ public class LocationsController : ControllerBase
     {
         var location = await _locationsService.GetAsync(id);
 
-        if (location is null) return NotFound();
+        if (location is null)
+            return NotFound();
 
         return location;
     }
@@ -49,7 +50,8 @@ public class LocationsController : ControllerBase
     {
         var location = await _locationsService.GetAsync(id);
 
-        if (location is null) return NotFound();
+        if (location is null)
+            return NotFound();
 
         await _locationsService.UpdateAsync(id, updatedLocation);
 
@@ -62,7 +64,8 @@ public class LocationsController : ControllerBase
     {
         var location = await _locationsService.GetAsync(id);
 
-        if (location is null) return NotFound();
+        if (location is null)
+            return NotFound();
 
         await _locationsService.RemoveAsync(id);
 

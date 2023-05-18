@@ -31,7 +31,8 @@ public class ProjectsController : ControllerBase
     {
         var project = await _projectsService.GetAsync(id);
 
-        if (project is null) return NotFound();
+        if (project is null)
+            return NotFound();
 
         return project;
     }
@@ -54,7 +55,8 @@ public class ProjectsController : ControllerBase
     {
         var project = await _projectsService.GetAsync(id);
 
-        if (project is null) return NotFound();
+        if (project is null)
+            return NotFound();
 
         await _projectsService.UpdateAsync(id, updatedProject);
 
@@ -67,7 +69,8 @@ public class ProjectsController : ControllerBase
     {
         var project = await _projectsService.GetAsync(id);
 
-        if (project is null) return NotFound();
+        if (project is null)
+            return NotFound();
 
         await _projectsService.RemoveAsync(id);
 

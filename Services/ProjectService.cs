@@ -39,7 +39,8 @@ public class ProjectsService
         var filter = Builders<Project>.Filter.Eq(p => p.Id, id);
         var project = await _projectsCollection.Find(filter).FirstOrDefaultAsync();
 
-        if (project == null) return;
+        if (project == null)
+            return;
 
         var update = Builders<Project>.Update
             .Set(p => p.Title, updatedProject.Title ?? project.Title)

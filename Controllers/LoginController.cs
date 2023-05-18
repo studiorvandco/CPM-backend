@@ -55,7 +55,10 @@ public class LoginController : ControllerBase
         return Unauthorized();
     }
 
-    private static bool IsAuthorized(Login login, IOptions<DatabaseConfiguration> databaseConfiguration)
+    private static bool IsAuthorized(
+        Login login,
+        IOptions<DatabaseConfiguration> databaseConfiguration
+    )
     {
         var mongoClient = new MongoClient(databaseConfiguration.Value.Connection);
         var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.Name);

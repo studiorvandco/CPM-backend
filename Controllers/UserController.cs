@@ -29,7 +29,8 @@ public class UsersController : ControllerBase
     {
         var user = await _usersService.GetAsync(id);
 
-        if (user is null) return NotFound();
+        if (user is null)
+            return NotFound();
 
         return user;
     }
@@ -49,7 +50,8 @@ public class UsersController : ControllerBase
     {
         var user = await _usersService.GetAsync(id);
 
-        if (user is null) return NotFound();
+        if (user is null)
+            return NotFound();
 
         await _usersService.UpdateAsync(id, updatedUser);
 
@@ -62,7 +64,8 @@ public class UsersController : ControllerBase
     {
         var user = await _usersService.GetAsync(id);
 
-        if (user is null) return NotFound();
+        if (user is null)
+            return NotFound();
 
         await _usersService.RemoveAsync(id);
 

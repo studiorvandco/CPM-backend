@@ -23,47 +23,86 @@ public class ShotsController : ControllerBase
         return await _shotsService.GetAsync(idProject, idEpisode, idSequence);
     }
 
-    [HttpGet("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}")]
+    [HttpGet(
+        "{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"
+    )]
     [Authorize]
-    public async Task<ActionResult<Shot>> Get(string idProject, string idEpisode, string idSequence, string idShot)
+    public async Task<ActionResult<Shot>> Get(
+        string idProject,
+        string idEpisode,
+        string idSequence,
+        string idShot
+    )
     {
         var shot = await _shotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
-        if (shot is null) return NotFound();
+        if (shot is null)
+            return NotFound();
 
         return shot;
     }
 
     [HttpPost("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}")]
     [Authorize]
-    public async Task<IActionResult> Post(string idProject, string idEpisode, string idSequence, Shot newShot)
+    public async Task<IActionResult> Post(
+        string idProject,
+        string idEpisode,
+        string idSequence,
+        Shot newShot
+    )
     {
         await _shotsService.CreateAsync(idProject, idEpisode, idSequence, newShot);
 
-        return CreatedAtAction(nameof(Get), new { idProject, idEpisode, idSequence, idShot = newShot.Id }, newShot);
+        return CreatedAtAction(
+            nameof(Get),
+            new
+            {
+                idProject,
+                idEpisode,
+                idSequence,
+                idShot = newShot.Id
+            },
+            newShot
+        );
     }
 
-    [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}")]
+    [HttpPut(
+        "{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"
+    )]
     [Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, string idSequence, string idShot,
-        ShotUpdateDTO updatedShot)
+    public async Task<IActionResult> Update(
+        string idProject,
+        string idEpisode,
+        string idSequence,
+        string idShot,
+        ShotUpdateDTO updatedShot
+    )
     {
         var shot = await _shotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
-        if (shot is null) return NotFound();
+        if (shot is null)
+            return NotFound();
 
         await _shotsService.UpdateAsync(idProject, idEpisode, idSequence, idShot, updatedShot);
 
         return NoContent();
     }
 
-    [HttpDelete("{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}")]
+    [HttpDelete(
+        "{idProject:length(24)}/{idEpisode:length(24)}/{idSequence:length(24)}/{idShot:length(24)}"
+    )]
     [Authorize]
-    public async Task<IActionResult> Delete(string idProject, string idEpisode, string idSequence, string idShot)
+    public async Task<IActionResult> Delete(
+        string idProject,
+        string idEpisode,
+        string idSequence,
+        string idShot
+    )
     {
         var shot = await _shotsService.GetAsync(idProject, idEpisode, idSequence, idShot);
 
-        if (shot is null) return NotFound();
+        if (shot is null)
+            return NotFound();
 
         await _shotsService.RemoveAsync(idProject, idEpisode, idSequence, shot);
 

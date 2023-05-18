@@ -39,7 +39,8 @@ public class UsersService
         var filter = Builders<User>.Filter.Eq(u => u.Id, id);
         var user = await _usersCollection.Find(filter).FirstOrDefaultAsync();
 
-        if (user == null) return;
+        if (user == null)
+            return;
 
         if (updatedUser.Password != null)
             user.Password = updatedUser.Password;

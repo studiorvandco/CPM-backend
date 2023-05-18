@@ -50,7 +50,6 @@ public class Project
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
-
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]

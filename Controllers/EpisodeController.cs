@@ -29,7 +29,8 @@ public class EpisodesController : ControllerBase
     {
         var episode = await _episodesService.GetAsync(idProject, idEpisode);
 
-        if (episode is null) return NotFound();
+        if (episode is null)
+            return NotFound();
 
         return episode;
     }
@@ -45,11 +46,16 @@ public class EpisodesController : ControllerBase
 
     [HttpPut("{idProject:length(24)}/{idEpisode:length(24)}")]
     [Authorize]
-    public async Task<IActionResult> Update(string idProject, string idEpisode, EpisodeUpdateDTO updatedEpisode)
+    public async Task<IActionResult> Update(
+        string idProject,
+        string idEpisode,
+        EpisodeUpdateDTO updatedEpisode
+    )
     {
         var episode = await _episodesService.GetAsync(idProject, idEpisode);
 
-        if (episode is null) return NotFound();
+        if (episode is null)
+            return NotFound();
 
         await _episodesService.UpdateAsync(idProject, idEpisode, updatedEpisode);
 
@@ -62,7 +68,8 @@ public class EpisodesController : ControllerBase
     {
         var episode = await _episodesService.GetAsync(idProject, idEpisode);
 
-        if (episode is null) return NotFound();
+        if (episode is null)
+            return NotFound();
 
         await _episodesService.RemoveAsync(idProject, episode);
 
