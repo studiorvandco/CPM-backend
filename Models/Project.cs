@@ -15,7 +15,7 @@ public class Project
     [JsonRequired]
     [BsonElement("ProjectType")]
     [JsonPropertyName("project_type")]
-    public ProjectType ProjectType { get; set; } = ProjectType.Movie;
+    public ProjectType? ProjectType { get; set; }
 
     [BsonRequired]
     [JsonRequired]
@@ -60,8 +60,6 @@ public class Project
 
 public class ProjectUpdateDTO
 {
-    [JsonPropertyName("project_type")] public string? ProjectType { get; set; }
-
     [JsonPropertyName("title")] public string? Title { get; set; }
 
     [JsonPropertyName("description")] public string? Description { get; set; }
