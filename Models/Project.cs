@@ -9,7 +9,7 @@ public class Project
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string Id { get; } = ObjectId.GenerateNewId().ToString();
 
     [BsonRequired]
     [JsonRequired]
@@ -50,6 +50,12 @@ public class Project
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
+    [BsonRequired]
+    [JsonRequired]
+    [BsonElement("Links")]
+    [JsonPropertyName("links")]
+    public Dictionary<string, string> Links { get; set; } = new();
+
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]
@@ -70,4 +76,7 @@ public class ProjectUpdateDTO
 
     [JsonPropertyName("end_date")]
     public DateTimeOffset? EndDate { get; set; }
+
+    [JsonPropertyName("links")]
+    public Dictionary<string, string>? Links { get; set; }
 }
