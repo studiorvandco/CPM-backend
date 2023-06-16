@@ -54,7 +54,7 @@ public class Project
     [JsonRequired]
     [BsonElement("Links")]
     [JsonPropertyName("links")]
-    public Dictionary<string, string> Links { get; set; } = new();
+    public List<Link> Links { get; set; } = new();
 
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
@@ -78,5 +78,5 @@ public class ProjectUpdateDTO
     public DateTimeOffset? EndDate { get; set; }
 
     [JsonPropertyName("links")]
-    public Dictionary<string, string>? Links { get; set; }
+    public List<Link>? Links { get; set; }
 }
