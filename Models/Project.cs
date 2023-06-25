@@ -26,7 +26,7 @@ public class Project
     [BsonElement("Description")]
     [JsonPropertyName("description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string Description { get; set; } = string.Empty;
 
     [BsonRequired]
     [JsonRequired]
@@ -50,17 +50,16 @@ public class Project
     [BsonDefaultValue("0")]
     public int ShotsCompleted { get; internal set; } = 0;
 
-    [BsonRequired]
-    [JsonRequired]
     [BsonElement("Links")]
     [JsonPropertyName("links")]
+    [BsonDefaultValue("[]")]
     public List<Link> Links { get; set; } = new();
 
     [BsonElement("Episodes")]
     [JsonPropertyName("episodes")]
     [BsonDefaultValue("[]")]
     [JsonIgnore]
-    public List<Episode> Episodes { get; } = new();
+    public List<Episode> Episodes { get; set; } = new();
 }
 
 public class ProjectUpdateDTO

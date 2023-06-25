@@ -2,6 +2,6 @@ namespace CPM_backend.Models;
 
 public class Link
 {
-    public string label { get; set; }
-    public string url { get; set; }
+    public string? Label { get; set; }
+    public string? Url { get; set; }
 }

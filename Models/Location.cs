@@ -19,15 +19,5 @@ public class Location
     [BsonElement("Position")]
     [JsonPropertyName("position")]
     [BsonDefaultValue("")]
-    public string Position { get; set; } = "";
-
-    /*public Location cloneLocation(){
-        Location newLocation = new Location();
-
-        newLocation.Id = this.Id;
-        newLocation.Name = this.Name;
-        newLocation.Position = this.Position;
-
-        return newLocation;
-    }*/
+    public string Position { get; set; } = string.Empty;
 }

@@ -19,12 +19,12 @@ public class Member
     [BsonElement("LastName")]
     [JsonPropertyName("last_name")]
     [BsonDefaultValue("")]
-    public string LastName { get; set; } = "";
+    public string LastName { get; set; } = string.Empty;
 
     [BsonElement("Phone")]
     [JsonPropertyName("phone")]
     [BsonDefaultValue("")]
-    public string Phone { get; set; } = "";
+    public string Phone { get; set; } = string.Empty;
 
     /*public Member cloneMember(){
         Member newMember = new Member();

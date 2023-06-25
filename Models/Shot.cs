@@ -25,12 +25,12 @@ public class Shot
     [BsonElement("Value")]
     [JsonPropertyName("value")]
     [BsonDefaultValue("")]
-    public string Value { get; set; } = "";
+    public string Value { get; set; } = string.Empty;
 
     [BsonElement("Description")]
     [JsonPropertyName("description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string Description { get; set; } = string.Empty;
 
     [BsonElement("Completed")]
     [JsonPropertyName("completed")]
