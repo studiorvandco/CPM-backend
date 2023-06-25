@@ -46,7 +46,8 @@ public class ProjectsService
             .Set(p => p.Title, updatedProject.Title ?? project.Title)
             .Set(p => p.Description, updatedProject.Description ?? project.Description)
             .Set(p => p.StartDate, updatedProject.BeginDate ?? project.StartDate)
-            .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate);
+            .Set(p => p.EndDate, updatedProject.EndDate ?? project.EndDate)
+            .Set(p => p.Links, updatedProject.Links ?? project.Links);
 
         await _projectsCollection.UpdateOneAsync(filter, update);
     }

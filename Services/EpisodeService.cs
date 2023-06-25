@@ -49,10 +49,13 @@ public class EpisodesService
         if (project == null)
             return;
 
-        if (project.Episodes.Count == 0)
-            episode.Number = 1;
-        else
-            episode.Number = project.Episodes.Max(e => e.Number) + 1;
+        if (project.Episodes != null)
+        {
+            if (project.Episodes.Count == 0)
+                episode.Number = 1;
+            else
+                episode.Number = project.Episodes.Max(e => e.Number) + 1;
+        }
 
         var update = Builders<Project>.Update.Push(p => p.Episodes, episode);
 

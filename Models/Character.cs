@@ -14,10 +14,10 @@ public class Character
     [BsonElement("FirstName")]
     [JsonPropertyName("first_name")]
     [BsonDefaultValue("")]
-    public string FirstName { get; set; } = "";
+    public string FirstName { get; set; } = string.Empty;
 
     [BsonElement("LastName")]
     [JsonPropertyName("last_name")]
     [BsonDefaultValue("")]
-    public string LastName { get; set; } = "";
+    public string LastName { get; set; } = string.Empty;
 }

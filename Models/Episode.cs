@@ -14,28 +14,28 @@ public class Episode
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("number")]
-    public int Number { get; internal set; } = 0;
+    public int Number { get; internal set; }
 
     [BsonRequired]
     [JsonRequired]
     [BsonElement("Title")]
     [JsonPropertyName("title")]
-    public string Title { get; set; } = null!;
+    public string Title { get; set; } = string.Empty;
 
     [BsonElement("Description")]
     [JsonPropertyName("description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string Description { get; set; } = string.Empty;
 
     [BsonElement("Director")]
     [JsonPropertyName("director")]
     [BsonDefaultValue("")]
-    public string Director { get; set; } = "";
+    public string Director { get; set; } = string.Empty;
 
     [BsonElement("Writer")]
     [JsonPropertyName("writer")]
     [BsonDefaultValue("")]
-    public string Writer { get; set; } = "";
+    public string Writer { get; set; } = string.Empty;
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("shots_total")]

@@ -25,7 +25,7 @@ public class Sequence
     [BsonElement("Description")]
     [JsonPropertyName("description")]
     [BsonDefaultValue("")]
-    public string Description { get; set; } = "";
+    public string Description { get; set; } = string.Empty;
 
     [BsonRequired]
     [BsonElement("BeginDate")]
