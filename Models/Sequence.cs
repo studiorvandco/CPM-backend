@@ -9,12 +9,12 @@ public class Sequence
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("id")]
-    public string Id { get; } = ObjectId.GenerateNewId().ToString();
+    public string? Id { get; internal set; }
 
     [BsonRequired]
     [BsonElement("Number")]
     [JsonPropertyName("number")]
-    public int Number { get; internal set; } = 0;
+    public int Number { get; internal set; }
 
     [BsonRequired]
     [JsonRequired]

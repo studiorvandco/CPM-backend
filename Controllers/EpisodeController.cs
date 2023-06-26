@@ -2,6 +2,7 @@ using CPM_backend.Models;
 using CPM_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace CPM_backend.Controllers;
 
@@ -39,6 +40,7 @@ public class EpisodesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Post(string idProject, Episode episode)
     {
+        episode.Id = ObjectId.GenerateNewId().ToString();
         await _episodesService.CreateAsync(idProject, episode);
 
         return CreatedAtAction(nameof(Get), new { idProject, idEpisode = episode.Id }, episode);

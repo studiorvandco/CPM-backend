@@ -2,6 +2,7 @@ using CPM_backend.Models;
 using CPM_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace CPM_backend.Controllers;
 
@@ -44,7 +45,14 @@ public class ProjectsController : ControllerBase
         await _projectsService.CreateAsync(newProject);
 
         if (newProject.ProjectType == ProjectType.Movie)
-            await _episodesService.CreateAsync(newProject.Id, new Episode());
+        {
+            var episode = new Episode
+            {
+                Id = ObjectId.GenerateNewId().ToString()
+            };
+            await _episodesService.CreateAsync(newProject.Id, episode);
+            
+        }
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }

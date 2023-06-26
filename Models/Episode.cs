@@ -9,7 +9,7 @@ public class Episode
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonPropertyName("id")]
-    public string Id { get; } = ObjectId.GenerateNewId().ToString();
+    public string? Id { get; internal set; }
 
     [BsonRequired]
     [BsonElement("Number")]
@@ -30,12 +30,12 @@ public class Episode
     [BsonElement("Director")]
     [JsonPropertyName("director")]
     [BsonDefaultValue("")]
-    public string Director { get; set; } = string.Empty;
+    public string? Director { get; set; }
 
     [BsonElement("Writer")]
     [JsonPropertyName("writer")]
     [BsonDefaultValue("")]
-    public string Writer { get; set; } = string.Empty;
+    public string? Writer { get; set; }
 
     [BsonElement("ShotsTotal")]
     [JsonPropertyName("shots_total")]
